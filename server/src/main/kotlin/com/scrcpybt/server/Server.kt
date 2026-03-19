@@ -324,7 +324,7 @@ class Server(
 
         encryptedChannel = EncryptedChannel().apply {
             initialize(
-                keyExchange.getSharedSecret(),
+                keyExchange.sharedSecret,
                 combinedSalt,
                 false,
                 connection!!.getInputStream(),
