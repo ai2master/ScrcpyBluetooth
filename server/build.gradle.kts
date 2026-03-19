@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm")
 }
 
 java {
@@ -15,7 +15,7 @@ kotlin {
 dependencies {
     implementation(project(":common"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
-    compileOnly(files("${System.getenv("ANDROID_HOME") ?: "/opt/android-sdk"}/platforms/android-34/android.jar"))
+    compileOnly(files("${System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT") ?: "/opt/android-sdk"}/platforms/android-34/android.jar"))
 }
 
 tasks.jar {
