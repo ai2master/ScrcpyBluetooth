@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_clipboard"
+        android:title="Clipboard Transfer"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_file_transfer"
+        android:title="File Transfer"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_folder_sync"
+        android:title="Folder Sync"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_toggle_virtual_display"
+        android:title="@string/virtual_display_switch_vd"
+        app:showAsAction="never" />
+</menu>

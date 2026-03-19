@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ScrcpyBluetooth</string>
+
+    <!-- Role selection -->
+    <string name="select_role">Select Role</string>
+    <string name="role_controller">Controller (A)</string>
+    <string name="role_relay">Relay (B)</string>
+    <string name="role_controlled">Controlled Device (C)</string>
+    <string name="select_role_hint">Please select a role</string>
+
+    <!-- Transport selection -->
+    <string name="select_transport">Select Transport</string>
+    <string name="transport_bluetooth">Bluetooth</string>
+    <string name="transport_usb">USB ADB</string>
+
+    <!-- Actions -->
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="start_server">Start Server</string>
+    <string name="stop_server">Stop Server</string>
+
+    <!-- Status -->
+    <string name="connecting">Connecting…</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="initializing">Initializing…</string>
+    <string name="ready">Ready</string>
+    <string name="starting_server">Starting server…</string>
+    <string name="server_running">Server running</string>
+    <string name="server_stopped">Server stopped</string>
+    <string name="server_error">Server error: %1$s</string>
+
+    <!-- Errors -->
+    <string name="error_no_root">Root access required on this device</string>
+    <string name="error_bluetooth_disabled">Bluetooth is disabled</string>
+    <string name="permission_denied">Permission denied: %1$s</string>
+    <string name="error_no_connection">No active connection. Please connect first.</string>
+    <string name="error_transfer_failed">Transfer failed: %1$s</string>
+
+    <!-- Navigation buttons -->
+    <string name="btn_back">Back</string>
+    <string name="btn_home">Home</string>
+    <string name="btn_recents">Recent Apps</string>
+    <string name="btn_power">Screen Off</string>
+    <string name="btn_unlock">Force Unlock</string>
+    <string name="btn_unlock_hint">Tap to unlock, long press to restore lock</string>
+
+    <!-- Virtual Display Mode -->
+    <string name="virtual_display_title">Virtual Display Mode</string>
+    <string name="virtual_display_enable">Enable Virtual Display</string>
+    <string name="virtual_display_disable">Disable Virtual Display</string>
+    <string name="virtual_display_description">Creates an independent virtual screen for remote control. The physical screen stays off or locked, so no one near the device can see or interact with the remote session. Similar to Windows Remote Desktop.</string>
+    <string name="virtual_display_active">Virtual display active</string>
+    <string name="virtual_display_inactive">Virtual display inactive</string>
+    <string name="virtual_display_switching">Switching to virtual display…</string>
+    <string name="virtual_display_switch_mirror">Switch to Mirror Mode</string>
+    <string name="virtual_display_switch_vd">Switch to Virtual Display</string>
+    <string name="virtual_display_created">Virtual display created (ID: %1$d)</string>
+    <string name="virtual_display_released">Virtual display released</string>
+    <string name="virtual_display_failed">Failed to create virtual display: %1$s</string>
+    <string name="virtual_display_fallback">Virtual display unavailable, using mirror mode</string>
+    <string name="virtual_display_requires_api29">Virtual display requires Android 10 or higher</string>
+    <string name="virtual_display_physical_off">Physical screen off (remote on virtual display)</string>
+    <string name="virtual_display_physical_restored">Physical screen restored</string>
+    <string name="virtual_display_mode_label">Display Mode</string>
+    <string name="virtual_display_mode_auto">Auto (Virtual Display on Android 10+, Mirror on older)</string>
+    <string name="virtual_display_mode_mirror">Mirror (capture physical screen)</string>
+    <string name="virtual_display_mode_virtual">Virtual Display (independent screen)</string>
+    <string name="virtual_display_note">Virtual display mode provides Windows RDP-like privacy: the remote user operates on a separate screen while the physical device stays locked. Requires Android 10+ and root access.</string>
+
+    <!-- Virtual Display Advanced Options -->
+    <string name="vd_start_app_label">Start app on virtual display</string>
+    <string name="vd_start_app_hint">Component name (e.g. com.android.settings/.Settings), leave empty for auto</string>
+    <string name="vd_bypass_secure_flag">Bypass FLAG_SECURE</string>
+    <string name="vd_bypass_secure_flag_warning">Warning: Disables screen capture protection for banking/payment apps. Only enable if you need to view protected apps remotely. The bypass is automatically disabled when the session ends.</string>
+
+    <!-- Force Unlock (fallback for Android < 10) -->
+    <string name="force_unlock_enable">Enable Force Unlock</string>
+    <string name="force_unlock_warning">Warning: This is a fallback for devices that do not support virtual display mode (Android &lt; 10). When unlocked remotely, anyone with physical access to the device can also use it without unlocking. The credential is stored locally and never transmitted.</string>
+    <string name="force_unlock_fallback_note">On Android 10+, virtual display mode is recommended instead. It keeps the physical screen locked while allowing remote access.</string>
+    <string name="credential_type_label">Lock screen credential type</string>
+    <string name="credential_none">None (swipe lock)</string>
+    <string name="credential_pin">PIN</string>
+    <string name="credential_password">Password</string>
+    <string name="credential_pattern">Pattern</string>
+    <string name="credential_value_label">Lock credential</string>
+    <string name="credential_value_hint">Enter PIN, password, or pattern digits</string>
+    <string name="credential_local_only_note">This credential is stored locally on this device only. It is never sent over Bluetooth or USB.</string>
+
+    <!-- Feature menu (shown after connection is established) -->
+    <string name="feature_screen_mirror">Screen Mirror</string>
+    <string name="feature_clipboard">Clipboard Transfer</string>
+    <string name="feature_file_transfer">File Transfer</string>
+    <string name="feature_folder_sync">Folder Sync</string>
+    <string name="feature_share_config">Share Config</string>
+
+    <!-- Clipboard Transfer -->
+    <string name="clipboard_title">Clipboard Transfer</string>
+    <string name="clipboard_local">Local Clipboard</string>
+    <string name="clipboard_remote">Remote Clipboard</string>
+    <string name="clipboard_empty">(empty)</string>
+    <string name="clipboard_refresh">Refresh</string>
+    <string name="clipboard_send_to_remote">Send to Remote</string>
+    <string name="clipboard_fetch_from_remote">Fetch from Remote</string>
+    <string name="clipboard_copy_to_local">Copy to Local</string>
+    <string name="clipboard_sent">Clipboard content sent to remote device</string>
+    <string name="clipboard_received">Remote clipboard content received</string>
+    <string name="clipboard_copied">Copied to local clipboard</string>
+    <string name="clipboard_fetch_requested">Fetching remote clipboard…</string>
+
+    <!-- File Transfer -->
+    <string name="file_transfer_title">File Transfer</string>
+    <string name="file_select_files">Select File(s)</string>
+    <string name="file_select_folder">Select Folder</string>
+    <string name="file_transfer_queue">Transfer Queue</string>
+    <string name="file_transfer_empty">No transfers in queue</string>
+    <string name="file_status_pending">Pending</string>
+    <string name="file_status_transferring">Transferring</string>
+    <string name="file_status_done">Done</string>
+    <string name="file_status_error">Error</string>
+    <string name="file_transfer_progress">%1$d / %2$d files</string>
+    <string name="file_transfer_size">%1$s / %2$s</string>
+    <string name="file_receive_mode">Receive Mode</string>
+    <string name="file_send_mode">Send Mode</string>
+    <string name="file_waiting_incoming">Waiting for incoming files…</string>
+    <string name="file_received_to">File saved to: %1$s</string>
+
+    <!-- Folder Sync -->
+    <string name="folder_sync_title">Folder Sync</string>
+    <string name="folder_local_path">Local Folder</string>
+    <string name="folder_remote_path">Remote Folder</string>
+    <string name="folder_local_hint">Select or enter local folder path</string>
+    <string name="folder_remote_hint">Enter remote folder path (e.g. /sdcard/Documents)</string>
+    <string name="folder_pick">Browse</string>
+    <string name="sync_direction">Sync Direction</string>
+    <string name="sync_local_to_remote">Local → Remote</string>
+    <string name="sync_remote_to_local">Remote → Local</string>
+    <string name="sync_bidirectional">Bidirectional</string>
+    <string name="sync_start">Start Sync</string>
+    <string name="sync_stop">Stop Sync</string>
+    <string name="sync_progress">Syncing: %1$d / %2$d files</string>
+    <string name="sync_current_file">Current: %1$s</string>
+    <string name="sync_complete">Sync complete: %1$d files transferred</string>
+    <string name="sync_error">Sync error: %1$s</string>
+    <string name="sync_comparing">Comparing file lists…</string>
+    <string name="sync_no_changes">No changes detected</string>
+
+    <!-- Share Forwarding -->
+    <string name="share_to_remote">Share to Remote</string>
+    <string name="share_confirm_title">Share to Remote Device</string>
+    <string name="share_confirm_message">Send this content to the remote device?</string>
+    <string name="share_sending">Sending…</string>
+    <string name="share_sent">Content shared to remote device</string>
+    <string name="share_failed">Share failed: %1$s</string>
+    <string name="share_cancel">Cancel</string>
+    <string name="share_send">Send</string>
+    <string name="share_text_preview">Text: %1$s</string>
+    <string name="share_file_preview">File: %1$s (%2$s)</string>
+    <string name="share_multiple_files">%1$d files selected</string>
+
+    <!-- Share Config (Controlled device) -->
+    <string name="share_config_title">Share Forwarding Config</string>
+    <string name="share_config_enable">Enable Share Forwarding</string>
+    <string name="share_config_target_app">Target App</string>
+    <string name="share_config_component">Component Name</string>
+    <string name="share_config_component_hint">e.g. com.example.app/.ShareActivity</string>
+    <string name="share_config_save">Save Configuration</string>
+    <string name="share_config_saved">Share configuration saved</string>
+    <string name="share_config_note">When the controller shares content, it will be forwarded to the selected app on this device.</string>
+
+    <!-- History -->
+    <string name="history_title">History</string>
+    <string name="history_filter_label">Filter:</string>
+    <string name="history_filter_all">All</string>
+    <string name="history_filter_clipboard">Clipboard</string>
+    <string name="history_filter_file_transfer">File Transfer</string>
+    <string name="history_filter_folder_sync">Folder Sync</string>
+    <string name="history_filter_share_forward">Share Forward</string>
+    <string name="history_filter_screen_mirror">Screen Mirror</string>
+    <string name="history_clear">Clear History</string>
+    <string name="history_clear_confirm_title">Clear History?</string>
+    <string name="history_clear_confirm_message">This will delete all history entries. This action cannot be undone.</string>
+    <string name="history_clear_confirm">Clear</string>
+    <string name="history_details_title">History Details</string>
+    <string name="history_item_icon">Operation icon</string>
+
+    <!-- Authentication -->
+    <string name="auth_request_title">Authentication Request</string>
+    <string name="auth_request_message">Device %1$s is requesting access to %2$s. Allow?</string>
+    <string name="auth_grant">Allow</string>
+    <string name="auth_deny">Deny</string>
+    <string name="auth_feature_screen_mirror">Screen Mirror</string>
+    <string name="auth_feature_clipboard">Clipboard</string>
+    <string name="auth_feature_file_transfer">File Transfer</string>
+    <string name="auth_feature_folder_sync">Folder Sync</string>
+    <string name="auth_feature_share_forward">Share Forward</string>
+    <string name="auth_denied">Authentication denied: %1$s</string>
+    <string name="auth_granted">Authentication granted</string>
+    <string name="auth_failed">Authentication failed</string>
+
+    <!-- Device Trust -->
+    <string name="device_trust_title">Trusted Devices</string>
+    <string name="device_trust_empty">No trusted devices</string>
+    <string name="device_trust_revoke">Revoke Trust</string>
+    <string name="device_trust_revoke_confirm">Revoke trust for this device?</string>
+
+    <!-- Shortcut Configuration -->
+    <string name="shortcut_config_title">快捷方式设置</string>
+    <string name="shortcut_config_desc">自定义 ScrcpyBluetooth 在桌面长按菜单、文本选中操作条和系统分享菜单中的快捷入口。所有快捷方式均可独立开关。</string>
+
+    <string name="shortcut_section_launcher">桌面长按快捷方式</string>
+    <string name="shortcut_clipboard">剪贴板传输</string>
+    <string name="shortcut_clipboard_desc">在桌面长按图标时显示"剪贴板传输"快捷方式</string>
+    <string name="shortcut_file_transfer">文件传输</string>
+    <string name="shortcut_file_transfer_desc">在桌面长按图标时显示"文件传输"快捷方式</string>
+    <string name="shortcut_folder_sync">文件夹同步</string>
+    <string name="shortcut_folder_sync_desc">在桌面长按图标时显示"文件夹同步"快捷方式</string>
+    <string name="shortcut_share_forward">分享穿透设置</string>
+    <string name="shortcut_share_forward_desc">在桌面长按图标时显示"分享穿透设置"快捷方式</string>
+
+    <string name="shortcut_section_text_action">文本选中操作条</string>
+    <string name="shortcut_text_action_clipboard">发送到远端剪贴板</string>
+    <string name="shortcut_text_action_clipboard_desc">在任意应用中选中文本时，操作条显示"发送到远端剪贴板"选项</string>
+
+    <string name="shortcut_section_share">系统分享菜单</string>
+    <string name="shortcut_share_menu">分享到远端设备</string>
+    <string name="shortcut_share_menu_desc">在系统分享菜单中显示"发送到远端设备"选项（支持文本和文件）</string>
+
+    <string name="shortcut_remove_all">全部删除</string>
+    <string name="shortcut_restore_defaults">恢复默认</string>
+    <string name="shortcut_remove_all_title">删除所有快捷方式？</string>
+    <string name="shortcut_remove_all_message">将删除所有桌面长按快捷方式，并禁用文本选中操作条和分享菜单中的入口。此操作可以恢复。</string>
+    <string name="shortcut_all_removed">所有快捷方式已删除</string>
+    <string name="shortcut_defaults_restored">已恢复默认设置</string>
+
+    <!-- Text selection action -->
+    <string name="text_action_send_to_remote">发送到远端剪贴板</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
+    <string name="loading">Loading…</string>
+
+    <!-- Folder Sync - Extended -->
+    <string name="sync_section_basic">Basic Configuration</string>
+    <string name="sync_section_versioning">File Versioning</string>
+    <string name="sync_section_power">Power Conditions</string>
+    <string name="sync_section_advanced">Advanced Settings</string>
+    <string name="sync_section_control">Sync Control</string>
+    <string name="sync_section_status">Sync Status</string>
+
+    <!-- Folder Type -->
+    <string name="sync_folder_type">Folder Type</string>
+    <string name="sync_folder_type_send_only">Send Only</string>
+    <string name="sync_folder_type_receive_only">Receive Only</string>
+    <string name="sync_folder_type_send_receive">Send &amp; Receive</string>
+    <string name="sync_folder_type_send_only_desc">Local changes pushed to remote, remote changes ignored</string>
+    <string name="sync_folder_type_receive_only_desc">Remote changes pulled to local, local changes not pushed</string>
+    <string name="sync_folder_type_send_receive_desc">Bidirectional sync between local and remote</string>
+
+    <!-- Versioning -->
+    <string name="sync_versioning_type">Versioning Type</string>
+    <string name="sync_versioning_none">None</string>
+    <string name="sync_versioning_trashcan">Trashcan</string>
+    <string name="sync_versioning_simple">Simple</string>
+    <string name="sync_versioning_staggered">Staggered</string>
+    <string name="sync_versioning_external">External</string>
+    <string name="sync_versioning_cleanout_days">Cleanup Days (0 = never)</string>
+    <string name="sync_versioning_keep_versions">Keep N Versions</string>
+    <string name="sync_versioning_max_age_days">Max Age (days)</string>
+    <string name="sync_versioning_command">External Command</string>
+
+    <!-- Power Conditions -->
+    <string name="sync_only_while_charging">Sync only while charging</string>
+    <string name="sync_min_battery_percent">Minimum Battery Level</string>
+    <string name="sync_respect_battery_saver">Respect battery saver mode</string>
+    <string name="sync_time_window">Sync Time Window (hours)</string>
+    <string name="sync_time_window_start_hint">Start (0-23)</string>
+    <string name="sync_time_window_end_hint">End (0-23)</string>
+
+    <!-- Advanced Settings -->
+    <string name="sync_rescan_interval">Rescan Interval</string>
+    <string name="sync_fs_watcher_enabled">Enable File System Watcher</string>
+    <string name="sync_fs_watcher_delay">Watcher Delay</string>
+    <string name="sync_ignore_delete">Ignore Deletions</string>
+    <string name="sync_pull_order">Pull Order</string>
+    <string name="sync_pull_order_random">Random</string>
+    <string name="sync_pull_order_alphabetic">Alphabetic</string>
+    <string name="sync_pull_order_smallest_first">Smallest First</string>
+    <string name="sync_pull_order_largest_first">Largest First</string>
+    <string name="sync_pull_order_oldest_first">Oldest First</string>
+    <string name="sync_pull_order_newest_first">Newest First</string>
+    <string name="sync_block_size">Block Size</string>
+    <string name="sync_max_conflicts">Max Conflicts</string>
+    <string name="sync_min_disk_free">Min Disk Free</string>
+    <string name="sync_seconds">seconds</string>
+    <string name="sync_kb">KB</string>
+    <string name="sync_mb">MB</string>
+
+    <!-- Sync Control -->
+    <string name="sync_save_config">Save Configuration</string>
+    <string name="sync_start_service">Start Service</string>
+    <string name="sync_stop_service">Stop Service</string>
+    <string name="sync_trigger_manual">Trigger Manual Sync</string>
+    <string name="sync_edit_syncignore">Edit .syncignore</string>
+
+    <!-- Sync Status -->
+    <string name="sync_status_label">Status:</string>
+    <string name="sync_status_idle">Idle</string>
+    <string name="sync_status_syncing">Syncing…</string>
+    <string name="sync_status_scanning">Scanning files…</string>
+    <string name="sync_status_waiting">Waiting for conditions…</string>
+    <string name="sync_status_error">Error: %1$s</string>
+    <string name="sync_status_skipped">Skipped</string>
+    <string name="sync_status_unknown">Unknown</string>
+    <string name="sync_last_sync_label">Last Sync:</string>
+    <string name="sync_last_sync_time">%1$s</string>
+    <string name="sync_never_synced">Never synced</string>
+    <string name="sync_file_count_label">Files:</string>
+    <string name="sync_file_count">%1$d files</string>
+    <string name="sync_file_count_zero">0 files</string>
+    <string name="sync_power_status_label">Power:</string>
+    <string name="sync_log_label">Sync Log</string>
+
+    <!-- Sync Service -->
+    <string name="sync_service_starting">Starting sync service…</string>
+    <string name="sync_service_stopping">Stopping sync service…</string>
+    <string name="sync_config_saved">Configuration saved</string>
+    <string name="sync_syncignore_saved">.syncignore saved</string>
+    <string name="sync_manual_triggered">Manual sync triggered</string>
+
+    <!-- Sync Errors -->
+    <string name="sync_error_empty_paths">Please specify both local and remote paths</string>
+    <string name="sync_error_save_config">Failed to save configuration: %1$s</string>
+    <string name="sync_error_save_syncignore">Failed to save .syncignore: %1$s</string>
+    <string name="sync_error_no_folder">No folder configured</string>
+    <string name="sync_error_no_local_path">No local path specified</string>
+
+    <!-- Permission status panel -->
+    <string name="permission_panel_title">权限提示</string>
+    <string name="permission_details">查看详情</string>
+    <string name="permission_go_to_settings">前往设置</string>
+    <string name="permission_grant">授予权限</string>
+    <string name="permission_missing_critical">缺少 %1$d 个必需权限，部分核心功能无法使用</string>
+    <string name="permission_missing_optional">缺少 %1$d 个可选权限，部分功能受限</string>
+    <string name="permission_all_granted">所有权限已授予</string>
+
+    <!-- Battery optimization -->
+    <string name="battery_opt_title">后台保活</string>
+    <string name="battery_opt_message">为了保持屏幕镜像连接稳定，建议允许本应用在后台不受限制运行。\n\n这会略微增加电池消耗，但仅在连接激活时有效。\n\n是否前往设置？</string>
+    <string name="battery_opt_go">前往设置</string>
+    <string name="battery_opt_skip">暂不设置</string>
+
+    <!-- Service notification actions -->
+    <string name="notification_disconnect">断开连接</string>
+</resources>

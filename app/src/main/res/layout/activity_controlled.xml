@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/role_controlled"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ready"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Virtual Display Mode -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/virtual_display_title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_virtual_display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/virtual_display_enable"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/virtual_display_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/virtual_display_description"
+        android:textSize="12sp"
+        android:textColor="#336699"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Virtual display advanced options (shown when VD is enabled) -->
+    <LinearLayout
+        android:id="@+id/vd_options_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:padding="12dp"
+        android:background="#F0F4F8"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/vd_start_app_label"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/edit_start_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/vd_start_app_hint"
+            android:inputType="text"
+            android:textSize="13sp"
+            android:layout_marginBottom="12dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_bypass_secure_flag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/vd_bypass_secure_flag"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/vd_bypass_secure_flag_warning"
+            android:textSize="11sp"
+            android:textColor="#CC6600" />
+    </LinearLayout>
+
+    <!-- Force Unlock Configuration (fallback for Android < 10) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="16dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_force_unlock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/force_unlock_enable"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/force_unlock_warning"
+        android:textSize="12sp"
+        android:textColor="#FF6600"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/force_unlock_fallback_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/force_unlock_fallback_note"
+        android:textSize="12sp"
+        android:textColor="#888888"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:id="@+id/unlock_config_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:padding="12dp"
+        android:background="#F5F5F5">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/credential_type_label"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spinner_credential_type"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/credential_value_label"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/edit_credential"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/credential_value_hint"
+            android:inputType="textPassword"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/credential_local_only_note"
+            android:textSize="11sp"
+            android:textColor="#888888" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="16dp" />
+
+    <Button
+        android:id="@+id/btn_start_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_server"
+        android:textSize="18sp"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btn_stop_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/stop_server"
+        android:textSize="18sp"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btn_share_config"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_config_title"
+        android:textSize="14sp" />
+
+</LinearLayout>
+</ScrollView>

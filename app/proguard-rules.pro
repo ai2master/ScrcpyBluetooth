@@ -1,0 +1,4 @@
+-keepclassmembers class com.scrcpybt.** { *; }
+-keep class org.bouncycastle.** { *; }
+-keep class net.jpountz.** { *; }
+-dontwarn org.bouncycastle.**

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share_config_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_config_note"
+            android:layout_marginTop="8dp"
+            android:textSize="13sp" />
+
+        <!-- Enable switch -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_share_enable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_config_enable"
+            android:layout_marginTop="16dp"
+            android:padding="8dp" />
+
+        <!-- Config panel (shown when enabled) -->
+        <LinearLayout
+            android:id="@+id/share_config_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="12dp">
+
+            <!-- Target app -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/share_config_target_app"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_target_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <!-- Component name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/share_config_component"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+
+            <EditText
+                android:id="@+id/et_component_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/share_config_component_hint"
+                android:inputType="text"
+                android:singleLine="true"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Save button -->
+        <Button
+            android:id="@+id/btn_save_config"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_config_save"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+</ScrollView>

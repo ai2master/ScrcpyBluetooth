@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ScrcpyBluetooth</string>
+
+    <!-- 角色选择 -->
+    <string name="select_role">选择角色</string>
+    <string name="role_controller">控制端 (A)</string>
+    <string name="role_relay">中继端 (B)</string>
+    <string name="role_controlled">被控端 (C)</string>
+    <string name="select_role_hint">请选择角色</string>
+
+    <!-- 传输方式 -->
+    <string name="select_transport">选择传输方式</string>
+    <string name="transport_bluetooth">蓝牙</string>
+    <string name="transport_usb">USB ADB</string>
+
+    <!-- 操作 -->
+    <string name="start">开始</string>
+    <string name="stop">停止</string>
+    <string name="start_server">启动服务端</string>
+    <string name="stop_server">停止服务端</string>
+
+    <!-- 状态 -->
+    <string name="connecting">连接中…</string>
+    <string name="connected">已连接</string>
+    <string name="disconnected">已断开</string>
+    <string name="initializing">初始化中…</string>
+    <string name="ready">就绪</string>
+    <string name="starting_server">正在启动服务端…</string>
+    <string name="server_running">服务端运行中</string>
+    <string name="server_stopped">服务端已停止</string>
+    <string name="server_error">服务端错误：%1$s</string>
+
+    <!-- 错误 -->
+    <string name="error_no_root">此设备需要Root权限</string>
+    <string name="error_bluetooth_disabled">蓝牙未启用</string>
+    <string name="permission_denied">权限被拒绝：%1$s</string>
+    <string name="error_no_connection">无活动连接，请先建立连接。</string>
+    <string name="error_transfer_failed">传输失败：%1$s</string>
+
+    <!-- 导航按钮 -->
+    <string name="btn_back">返回</string>
+    <string name="btn_home">主页</string>
+    <string name="btn_recents">最近任务</string>
+    <string name="btn_power">熄屏</string>
+    <string name="btn_unlock">强制解锁</string>
+    <string name="btn_unlock_hint">点击解锁，长按恢复锁屏</string>
+
+    <!-- 虚拟显示模式 -->
+    <string name="virtual_display_title">虚拟显示模式</string>
+    <string name="virtual_display_enable">启用虚拟显示</string>
+    <string name="virtual_display_disable">停用虚拟显示</string>
+    <string name="virtual_display_description">创建独立的虚拟屏幕用于远程控制。物理屏幕保持关闭或锁定状态，设备旁的人无法看到或操作远程会话。类似于Windows远程桌面的效果。</string>
+    <string name="virtual_display_active">虚拟显示已激活</string>
+    <string name="virtual_display_inactive">虚拟显示未激活</string>
+    <string name="virtual_display_switching">正在切换到虚拟显示…</string>
+    <string name="virtual_display_switch_mirror">切换到镜像模式</string>
+    <string name="virtual_display_switch_vd">切换到虚拟显示</string>
+    <string name="virtual_display_created">虚拟显示已创建（ID: %1$d）</string>
+    <string name="virtual_display_released">虚拟显示已释放</string>
+    <string name="virtual_display_failed">创建虚拟显示失败：%1$s</string>
+    <string name="virtual_display_fallback">虚拟显示不可用，使用镜像模式</string>
+    <string name="virtual_display_requires_api29">虚拟显示需要 Android 10 或更高版本</string>
+    <string name="virtual_display_physical_off">物理屏幕已关闭（远程操作在虚拟显示上）</string>
+    <string name="virtual_display_physical_restored">物理屏幕已恢复</string>
+    <string name="virtual_display_mode_label">显示模式</string>
+    <string name="virtual_display_mode_auto">自动（Android 10+ 使用虚拟显示，旧版本使用镜像）</string>
+    <string name="virtual_display_mode_mirror">镜像（捕获物理屏幕）</string>
+    <string name="virtual_display_mode_virtual">虚拟显示（独立屏幕）</string>
+    <string name="virtual_display_note">虚拟显示模式提供类似 Windows 远程桌面的隐私保护：远程用户在独立屏幕上操作，物理设备保持锁定状态。需要 Android 10 以上版本和 Root 权限。</string>
+
+    <!-- 虚拟显示高级选项 -->
+    <string name="vd_start_app_label">在虚拟显示上启动的应用</string>
+    <string name="vd_start_app_hint">组件名称（如 com.android.settings/.Settings），留空自动检测</string>
+    <string name="vd_bypass_secure_flag">绕过 FLAG_SECURE</string>
+    <string name="vd_bypass_secure_flag_warning">警告：这将禁用银行/支付等应用的截屏保护。仅在需要远程查看受保护应用时启用。会话结束后自动恢复。</string>
+
+    <!-- 强制解锁（Android 10 以下的回退方案） -->
+    <string name="force_unlock_enable">启用强制解锁</string>
+    <string name="force_unlock_warning">警告：这是不支持虚拟显示模式（Android 10 以下）的设备的回退方案。远程解锁后，任何能接触到设备的人也无需解锁即可使用。凭据仅存储在本机，绝不会传输。</string>
+    <string name="force_unlock_fallback_note">在 Android 10 及以上版本，建议使用虚拟显示模式。它可以在允许远程访问的同时保持物理屏幕锁定。</string>
+    <string name="credential_type_label">锁屏凭据类型</string>
+    <string name="credential_none">无（滑动锁屏）</string>
+    <string name="credential_pin">PIN码</string>
+    <string name="credential_password">密码</string>
+    <string name="credential_pattern">图案</string>
+    <string name="credential_value_label">锁屏凭据</string>
+    <string name="credential_value_hint">输入PIN码、密码或图案数字</string>
+    <string name="credential_local_only_note">此凭据仅存储在本设备上，绝不会通过蓝牙或USB发送到其他设备。</string>
+
+    <!-- 功能菜单（连接建立后显示） -->
+    <string name="feature_screen_mirror">屏幕镜像</string>
+    <string name="feature_clipboard">剪贴板传递</string>
+    <string name="feature_file_transfer">文件传输</string>
+    <string name="feature_folder_sync">文件夹同步</string>
+    <string name="feature_share_config">分享配置</string>
+
+    <!-- 剪贴板传递 -->
+    <string name="clipboard_title">剪贴板传递</string>
+    <string name="clipboard_local">本地剪贴板</string>
+    <string name="clipboard_remote">远程剪贴板</string>
+    <string name="clipboard_empty">（空）</string>
+    <string name="clipboard_refresh">刷新</string>
+    <string name="clipboard_send_to_remote">发送到远程</string>
+    <string name="clipboard_fetch_from_remote">从远程获取</string>
+    <string name="clipboard_copy_to_local">复制到本地</string>
+    <string name="clipboard_sent">剪贴板内容已发送到远程设备</string>
+    <string name="clipboard_received">已接收远程剪贴板内容</string>
+    <string name="clipboard_copied">已复制到本地剪贴板</string>
+    <string name="clipboard_fetch_requested">正在获取远程剪贴板…</string>
+
+    <!-- 文件传输 -->
+    <string name="file_transfer_title">文件传输</string>
+    <string name="file_select_files">选择文件</string>
+    <string name="file_select_folder">选择文件夹</string>
+    <string name="file_transfer_queue">传输队列</string>
+    <string name="file_transfer_empty">传输队列为空</string>
+    <string name="file_status_pending">等待中</string>
+    <string name="file_status_transferring">传输中</string>
+    <string name="file_status_done">已完成</string>
+    <string name="file_status_error">出错</string>
+    <string name="file_transfer_progress">%1$d / %2$d 个文件</string>
+    <string name="file_transfer_size">%1$s / %2$s</string>
+    <string name="file_receive_mode">接收模式</string>
+    <string name="file_send_mode">发送模式</string>
+    <string name="file_waiting_incoming">等待接收文件…</string>
+    <string name="file_received_to">文件已保存到：%1$s</string>
+
+    <!-- 文件夹同步 -->
+    <string name="folder_sync_title">文件夹同步</string>
+    <string name="folder_local_path">本地文件夹</string>
+    <string name="folder_remote_path">远程文件夹</string>
+    <string name="folder_local_hint">选择或输入本地文件夹路径</string>
+    <string name="folder_remote_hint">输入远程文件夹路径（如 /sdcard/Documents）</string>
+    <string name="folder_pick">浏览</string>
+    <string name="sync_direction">同步方向</string>
+    <string name="sync_local_to_remote">本地 → 远程</string>
+    <string name="sync_remote_to_local">远程 → 本地</string>
+    <string name="sync_bidirectional">双向同步</string>
+    <string name="sync_start">开始同步</string>
+    <string name="sync_stop">停止同步</string>
+    <string name="sync_progress">同步中：%1$d / %2$d 个文件</string>
+    <string name="sync_current_file">当前：%1$s</string>
+    <string name="sync_complete">同步完成：已传输 %1$d 个文件</string>
+    <string name="sync_error">同步错误：%1$s</string>
+    <string name="sync_comparing">正在比较文件列表…</string>
+    <string name="sync_no_changes">未检测到更改</string>
+
+    <!-- 分享转发 -->
+    <string name="share_to_remote">分享到远程</string>
+    <string name="share_confirm_title">分享到远程设备</string>
+    <string name="share_confirm_message">是否将此内容发送到远程设备？</string>
+    <string name="share_sending">发送中…</string>
+    <string name="share_sent">内容已分享到远程设备</string>
+    <string name="share_failed">分享失败：%1$s</string>
+    <string name="share_cancel">取消</string>
+    <string name="share_send">发送</string>
+    <string name="share_text_preview">文本：%1$s</string>
+    <string name="share_file_preview">文件：%1$s（%2$s）</string>
+    <string name="share_multiple_files">已选择 %1$d 个文件</string>
+
+    <!-- 分享配置（被控端） -->
+    <string name="share_config_title">分享转发配置</string>
+    <string name="share_config_enable">启用分享转发</string>
+    <string name="share_config_target_app">目标应用</string>
+    <string name="share_config_component">组件名称</string>
+    <string name="share_config_component_hint">例如 com.example.app/.ShareActivity</string>
+    <string name="share_config_save">保存配置</string>
+    <string name="share_config_saved">分享配置已保存</string>
+    <string name="share_config_note">当控制端分享内容时，内容将被转发到此设备上选定的应用。</string>
+
+    <!-- 历史记录 -->
+    <string name="history_title">历史记录</string>
+    <string name="history_filter_label">筛选：</string>
+    <string name="history_filter_all">全部</string>
+    <string name="history_filter_clipboard">剪贴板</string>
+    <string name="history_filter_file_transfer">文件传输</string>
+    <string name="history_filter_folder_sync">文件夹同步</string>
+    <string name="history_filter_share_forward">分享转发</string>
+    <string name="history_filter_screen_mirror">屏幕镜像</string>
+    <string name="history_clear">清除历史</string>
+    <string name="history_clear_confirm_title">清除历史？</string>
+    <string name="history_clear_confirm_message">这将删除所有历史记录条目。此操作无法撤销。</string>
+    <string name="history_clear_confirm">清除</string>
+    <string name="history_details_title">历史详情</string>
+    <string name="history_item_icon">操作图标</string>
+
+    <!-- 身份验证 -->
+    <string name="auth_request_title">身份验证请求</string>
+    <string name="auth_request_message">设备 %1$s 正在请求访问 %2$s。是否允许？</string>
+    <string name="auth_grant">允许</string>
+    <string name="auth_deny">拒绝</string>
+    <string name="auth_feature_screen_mirror">屏幕镜像</string>
+    <string name="auth_feature_clipboard">剪贴板</string>
+    <string name="auth_feature_file_transfer">文件传输</string>
+    <string name="auth_feature_folder_sync">文件夹同步</string>
+    <string name="auth_feature_share_forward">分享转发</string>
+    <string name="auth_denied">身份验证被拒绝：%1$s</string>
+    <string name="auth_granted">身份验证已授予</string>
+    <string name="auth_failed">身份验证失败</string>
+
+    <!-- 设备信任 -->
+    <string name="device_trust_title">受信任的设备</string>
+    <string name="device_trust_empty">无受信任的设备</string>
+    <string name="device_trust_revoke">撤销信任</string>
+    <string name="device_trust_revoke_confirm">撤销对此设备的信任？</string>
+
+    <!-- 通用 -->
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="save">保存</string>
+    <string name="close">关闭</string>
+    <string name="loading">加载中…</string>
+
+    <!-- 文件夹同步 - 扩展 -->
+    <string name="sync_section_basic">基本配置</string>
+    <string name="sync_section_versioning">文件版本控制</string>
+    <string name="sync_section_power">电源条件</string>
+    <string name="sync_section_advanced">高级设置</string>
+    <string name="sync_section_control">同步控制</string>
+    <string name="sync_section_status">同步状态</string>
+
+    <!-- 文件夹类型 -->
+    <string name="sync_folder_type">文件夹类型</string>
+    <string name="sync_folder_type_send_only">仅发送</string>
+    <string name="sync_folder_type_receive_only">仅接收</string>
+    <string name="sync_folder_type_send_receive">发送和接收</string>
+    <string name="sync_folder_type_send_only_desc">本地更改推送到远程，远程更改被忽略</string>
+    <string name="sync_folder_type_receive_only_desc">远程更改拉取到本地，本地更改不推送</string>
+    <string name="sync_folder_type_send_receive_desc">本地和远程之间的双向同步</string>
+
+    <!-- 版本控制 -->
+    <string name="sync_versioning_type">版本控制类型</string>
+    <string name="sync_versioning_none">无</string>
+    <string name="sync_versioning_trashcan">回收站</string>
+    <string name="sync_versioning_simple">简单</string>
+    <string name="sync_versioning_staggered">交错</string>
+    <string name="sync_versioning_external">外部</string>
+    <string name="sync_versioning_cleanout_days">清理天数（0 = 从不）</string>
+    <string name="sync_versioning_keep_versions">保留版本数</string>
+    <string name="sync_versioning_max_age_days">最大保留天数</string>
+    <string name="sync_versioning_command">外部命令</string>
+
+    <!-- 电源条件 -->
+    <string name="sync_only_while_charging">仅在充电时同步</string>
+    <string name="sync_min_battery_percent">最低电量</string>
+    <string name="sync_respect_battery_saver">遵守省电模式</string>
+    <string name="sync_time_window">同步时间窗口（小时）</string>
+    <string name="sync_time_window_start_hint">开始（0-23）</string>
+    <string name="sync_time_window_end_hint">结束（0-23）</string>
+
+    <!-- 高级设置 -->
+    <string name="sync_rescan_interval">重新扫描间隔</string>
+    <string name="sync_fs_watcher_enabled">启用文件系统监视器</string>
+    <string name="sync_fs_watcher_delay">监视器延迟</string>
+    <string name="sync_ignore_delete">忽略删除</string>
+    <string name="sync_pull_order">拉取顺序</string>
+    <string name="sync_pull_order_random">随机</string>
+    <string name="sync_pull_order_alphabetic">字母顺序</string>
+    <string name="sync_pull_order_smallest_first">最小优先</string>
+    <string name="sync_pull_order_largest_first">最大优先</string>
+    <string name="sync_pull_order_oldest_first">最旧优先</string>
+    <string name="sync_pull_order_newest_first">最新优先</string>
+    <string name="sync_block_size">块大小</string>
+    <string name="sync_max_conflicts">最大冲突数</string>
+    <string name="sync_min_disk_free">最小可用磁盘空间</string>
+    <string name="sync_seconds">秒</string>
+    <string name="sync_kb">KB</string>
+    <string name="sync_mb">MB</string>
+
+    <!-- 同步控制 -->
+    <string name="sync_save_config">保存配置</string>
+    <string name="sync_start_service">启动服务</string>
+    <string name="sync_stop_service">停止服务</string>
+    <string name="sync_trigger_manual">触发手动同步</string>
+    <string name="sync_edit_syncignore">编辑 .syncignore</string>
+
+    <!-- 同步状态 -->
+    <string name="sync_status_label">状态：</string>
+    <string name="sync_status_idle">空闲</string>
+    <string name="sync_status_syncing">同步中…</string>
+    <string name="sync_status_scanning">扫描文件中…</string>
+    <string name="sync_status_waiting">等待条件满足…</string>
+    <string name="sync_status_error">错误：%1$s</string>
+    <string name="sync_status_skipped">已跳过</string>
+    <string name="sync_status_unknown">未知</string>
+    <string name="sync_last_sync_label">上次同步：</string>
+    <string name="sync_last_sync_time">%1$s</string>
+    <string name="sync_never_synced">从未同步</string>
+    <string name="sync_file_count_label">文件数：</string>
+    <string name="sync_file_count">%1$d 个文件</string>
+    <string name="sync_file_count_zero">0 个文件</string>
+    <string name="sync_power_status_label">电源：</string>
+    <string name="sync_log_label">同步日志</string>
+
+    <!-- 同步服务 -->
+    <string name="sync_service_starting">正在启动同步服务…</string>
+    <string name="sync_service_stopping">正在停止同步服务…</string>
+    <string name="sync_config_saved">配置已保存</string>
+    <string name="sync_syncignore_saved">.syncignore 已保存</string>
+    <string name="sync_manual_triggered">已触发手动同步</string>
+
+    <!-- 同步错误 -->
+    <string name="sync_error_empty_paths">请指定本地和远程路径</string>
+    <string name="sync_error_save_config">保存配置失败：%1$s</string>
+    <string name="sync_error_save_syncignore">保存 .syncignore 失败：%1$s</string>
+    <string name="sync_error_no_folder">未配置文件夹</string>
+    <string name="sync_error_no_local_path">未指定本地路径</string>
+
+    <!-- 权限状态面板 -->
+    <string name="permission_panel_title">权限提示</string>
+    <string name="permission_details">查看详情</string>
+    <string name="permission_go_to_settings">前往设置</string>
+    <string name="permission_grant">授予权限</string>
+    <string name="permission_missing_critical">缺少 %1$d 个必需权限，部分核心功能无法使用</string>
+    <string name="permission_missing_optional">缺少 %1$d 个可选权限，部分功能受限</string>
+    <string name="permission_all_granted">所有权限已授予</string>
+
+    <!-- 电池优化 -->
+    <string name="battery_opt_title">后台保活</string>
+    <string name="battery_opt_message">为了保持屏幕镜像连接稳定，建议允许本应用在后台不受限制运行。\n\n这会略微增加电池消耗，但仅在连接激活时有效。\n\n是否前往设置？</string>
+    <string name="battery_opt_go">前往设置</string>
+    <string name="battery_opt_skip">暂不设置</string>
+
+    <!-- 服务通知操作 -->
+    <string name="notification_disconnect">断开连接</string>
+</resources>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <uses-feature android:name="android.hardware.bluetooth" android:required="true" />
+
+    <application
+        android:name=".ScrcpyApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ScrcpyBluetooth"
+        android:requestLegacyExternalStorage="true">
+
+        <!-- Main launcher (with dynamic shortcuts support) -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Screen mirroring activities -->
+        <activity
+            android:name=".ui.controller.ControllerActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.relay.RelayActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.controlled.ControlledActivity"
+            android:exported="false" />
+
+        <!-- Clipboard transfer -->
+        <activity
+            android:name=".ui.clipboard.ClipboardActivity"
+            android:exported="false"
+            android:label="@string/clipboard_title" />
+
+        <!-- Clipboard trampoline: transparent Activity for writing clipboard from background -->
+        <activity
+            android:name=".ui.clipboard.ClipboardTrampolineActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:excludeFromRecents="true"
+            android:noHistory="true" />
+
+        <!-- File transfer -->
+        <activity
+            android:name=".ui.filetransfer.FileTransferActivity"
+            android:exported="false"
+            android:label="@string/file_transfer_title" />
+
+        <!-- Folder sync -->
+        <activity
+            android:name=".ui.foldersync.FolderSyncActivity"
+            android:exported="false"
+            android:label="@string/folder_sync_title" />
+
+        <!-- History -->
+        <activity
+            android:name=".ui.history.HistoryActivity"
+            android:exported="false"
+            android:label="@string/history_title" />
+
+        <!--
+            Text selection action: "发送到远端剪贴板"
+            Appears in the floating toolbar when text is selected in any app.
+            Can be disabled via ShortcutHelper.setTextActionEnabled(false).
+            Requires Android 6.0+ (API 23+).
+        -->
+        <activity
+            android:name=".ui.textaction.SendTextToRemoteActivity"
+            android:exported="true"
+            android:label="@string/text_action_send_to_remote"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            Share forwarding: receiver on controller side (catches ACTION_SEND).
+            Text shares are sent as ClipboardMessage, files as ShareForwardMessage.
+            Can be disabled via ShortcutHelper.setShareMenuEnabled(false).
+        -->
+        <activity
+            android:name=".ui.share.ShareReceiverActivity"
+            android:exported="true"
+            android:label="@string/share_to_remote"
+            android:theme="@style/Theme.ScrcpyBluetooth.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
+        <!-- Share forwarding: config on controlled device side -->
+        <activity
+            android:name=".ui.share.ShareConfigActivity"
+            android:exported="false"
+            android:label="@string/share_config_title" />
+
+        <!-- Shortcut configuration: manage all shortcuts -->
+        <activity
+            android:name=".ui.shortcut.ShortcutConfigActivity"
+            android:exported="false"
+            android:label="@string/shortcut_config_title" />
+
+        <!-- FileProvider for share forwarding file URIs -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- Disconnect receiver for notification action button -->
+        <receiver
+            android:name=".receiver.DisconnectReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.scrcpybt.app.ACTION_DISCONNECT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Foreground services -->
+        <service
+            android:name=".service.ControllerService"
+            android:foregroundServiceType="connectedDevice"
+            android:exported="false" />
+
+        <service
+            android:name=".service.RelayService"
+            android:foregroundServiceType="connectedDevice"
+            android:exported="false" />
+
+        <service
+            android:name=".sync.SyncService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+    </application>
+</manifest>
