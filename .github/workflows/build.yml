@@ -42,21 +42,10 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon --stacktrace
 
-      - name: Build server JAR
-        run: gradle :server:jar --no-daemon
-
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/*.apk
-          retention-days: 7
-
-      - name: Upload server JAR
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: server-jar
-          path: server/build/libs/*.jar
           retention-days: 7
