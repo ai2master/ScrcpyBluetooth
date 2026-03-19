@@ -507,7 +507,7 @@ class ControllerService : Service() {
             // Send switch request to server
             val switchRequest = TransportSwitchMessage(
                 subType = TransportSwitchMessage.SUB_SWITCH_REQUEST,
-                sessionId = sessionManager.getSessionId(),
+                sessionId = sessionManager.sessionId,
                 newTransport = when (newTransport) {
                     TransportType.USB_ADB -> TransportSwitchMessage.TRANSPORT_USB_ADB
                     TransportType.BLUETOOTH_RFCOMM -> TransportSwitchMessage.TRANSPORT_BT_RFCOMM
@@ -537,7 +537,7 @@ class ControllerService : Service() {
                 // Send SWITCH_VERIFY with session ID
                 val verifyMsg = TransportSwitchMessage(
                     subType = TransportSwitchMessage.SUB_SWITCH_VERIFY,
-                    sessionId = sessionManager.getSessionId(),
+                    sessionId = sessionManager.sessionId,
                     newTransport = switchRequest.newTransport
                 )
 
@@ -557,7 +557,7 @@ class ControllerService : Service() {
                     // Send SWITCH_COMPLETE
                     val completeMsg = TransportSwitchMessage(
                         subType = TransportSwitchMessage.SUB_SWITCH_COMPLETE,
-                        sessionId = sessionManager.getSessionId(),
+                        sessionId = sessionManager.sessionId,
                         newTransport = switchRequest.newTransport
                     )
                     encryptedChannel?.send(completeMsg)

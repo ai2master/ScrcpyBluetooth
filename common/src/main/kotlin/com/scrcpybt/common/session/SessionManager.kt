@@ -107,9 +107,6 @@ class SessionManager {
                recvNonceBase != null
     }
 
-    /** 获取当前会话 ID */
-    fun getSessionId(): String = sessionId
-
     /** 检查会话是否活跃 */
     fun isActive(): Boolean = encryptedChannel != null && encryptionKey != null
 
