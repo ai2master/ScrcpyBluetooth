@@ -55,10 +55,10 @@ class FrameDecoder {
             val pixels = codec.decode(msg) ?: return null
             if (pixels.isEmpty()) return null
 
-            val width = msg.width
-            val height = msg.height
+            val width = msg.width.toInt()
+            val height = msg.height.toInt()
 
-            // 尺寸匹配时复用 Bitmap
+            // 尺寸匹配时复用 Bitmap | Reuse Bitmap when dimensions match
             val bitmap = reusableBitmap
             if (bitmap == null || bitmap.width != width || bitmap.height != height) {
                 reusableBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)

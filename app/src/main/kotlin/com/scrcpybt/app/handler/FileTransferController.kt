@@ -74,7 +74,9 @@ class FileTransferController(private val context: Context) {
         var chunkIndex: Int,
         var transferredBytes: Long,
         val totalSize: Long,
-        val isReceiving: Boolean
+        val isReceiving: Boolean,
+        val fileName: String = "",
+        val localPath: String = ""
     )
 
     init {
@@ -305,7 +307,9 @@ class FileTransferController(private val context: Context) {
                     chunkIndex = 0,
                     transferredBytes = 0,
                     totalSize = msg.fileSize,
-                    isReceiving = true
+                    isReceiving = true,
+                    fileName = fileName,
+                    localPath = file.absolutePath
                 )
                 activeTransfers[transferId] = state
 
@@ -369,7 +373,7 @@ class FileTransferController(private val context: Context) {
                     direction = HistoryEntry.DIR_RECEIVE,
                     deviceName = deviceName,
                     fileName = state.fileName,
-                    filePath = state.file.absolutePath,
+                    filePath = state.localPath,
                     size = state.totalSize,
                     status = HistoryEntry.STATUS_SUCCESS
                 )

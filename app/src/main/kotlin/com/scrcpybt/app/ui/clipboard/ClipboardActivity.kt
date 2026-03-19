@@ -84,7 +84,7 @@ class ClipboardActivity : AppCompatActivity() {
 
         tvLocalClipboard = findViewById(R.id.tv_local_clipboard)
         tvRemoteClipboard = findViewById(R.id.tv_remote_clipboard)
-        val btnRefresh = findViewById<Button>(R.id.btn_refresh)
+        val btnRefresh = findViewById<Button>(R.id.btn_refresh_local)
         val btnSendToRemote = findViewById<Button>(R.id.btn_send_to_remote)
         val btnFetchFromRemote = findViewById<Button>(R.id.btn_fetch_from_remote)
         val btnCopyToLocal = findViewById<Button>(R.id.btn_copy_to_local)

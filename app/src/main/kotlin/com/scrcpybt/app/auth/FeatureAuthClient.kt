@@ -58,7 +58,7 @@ class FeatureAuthClient(private val publicKey: ByteArray) {
             Logger.i(TAG, "Auth request sent for feature: ${AuthMessage.getFeatureName(featureId)}")
 
             // Wait for response with timeout
-            val response = reader.readMessage(timeout = 10000) // 10 second timeout
+            val response = reader.readMessage()
 
             if (response !is AuthMessage) {
                 Logger.e(TAG, "Unexpected response type: ${response?.type}")

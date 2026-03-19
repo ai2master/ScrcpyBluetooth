@@ -50,10 +50,10 @@ class ShareConfigActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        switchEnable = findViewById(R.id.switch_enable_share)
+        switchEnable = findViewById(R.id.switch_share_enable)
         spinnerTargetApp = findViewById(R.id.spinner_target_app)
         etComponentName = findViewById(R.id.et_component_name)
-        val btnSave = findViewById<Button>(R.id.btn_save)
+        val btnSave = findViewById<Button>(R.id.btn_save_config)
 
         // 加载所有能接收分享的已安装应用
         val apps = getShareCapableApps()

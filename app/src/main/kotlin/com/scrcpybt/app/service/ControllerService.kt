@@ -265,7 +265,7 @@ class ControllerService : Service() {
             android.os.Build.MODEL,
             android.os.Build.VERSION.RELEASE,
             0, 0, 0, // Controller doesn't send its screen dimensions
-            HandshakeMessage.CAP_TOUCH or HandshakeMessage.CAP_KEYBOARD
+            (HandshakeMessage.CAP_TOUCH.toInt() or HandshakeMessage.CAP_KEYBOARD.toInt()).toByte()
         )
         writer.writeMessage(handshake)
 

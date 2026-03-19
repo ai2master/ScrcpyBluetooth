@@ -286,7 +286,7 @@ class Server(
             displayInfo.getEffectiveWidth(),
             displayInfo.getEffectiveHeight(),
             displayInfo.density,
-            HandshakeMessage.CAP_TOUCH or HandshakeMessage.CAP_KEYBOARD
+            (HandshakeMessage.CAP_TOUCH.toInt() or HandshakeMessage.CAP_KEYBOARD.toInt()).toByte()
         )
         writer.writeMessage(serverHandshake)
         Logger.i(TAG, "Handshake complete")

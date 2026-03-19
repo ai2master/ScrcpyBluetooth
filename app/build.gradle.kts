@@ -45,4 +45,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("org.bouncycastle:bcprov-jdk18on:1.77")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

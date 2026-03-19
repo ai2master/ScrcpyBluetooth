@@ -38,7 +38,7 @@ class FileTransferActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val btnSelectFile = findViewById<Button>(R.id.btn_select_file)
+        val btnSelectFile = findViewById<Button>(R.id.btn_select_files)
         val btnSelectFolder = findViewById<Button>(R.id.btn_select_folder)
         rvTransfers = findViewById(R.id.rv_transfers)
         progressOverall = findViewById(R.id.progress_overall)
