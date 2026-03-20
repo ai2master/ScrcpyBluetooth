@@ -33,7 +33,8 @@ import com.scrcpybt.app.util.PermissionHelper
 import com.scrcpybt.common.transport.TransportType
 
 /**
- * 主界面：角色选择（控制端/中继端/被控端）和传输方式选择
+ * 主界面：角色选择（控制端/中继端/被控端）和传输方式选择。
+ * 这是应用的入口界面，提供用户友好的角色和传输方式选择体验，并整合权限管理和电池优化引导。
  *
  * 本应用支持三种角色：
  * - 控制端（Controller）：连接到被控设备，接收屏幕画面并发送控制指令
@@ -53,28 +54,56 @@ import com.scrcpybt.common.transport.TransportType
  * - 权限缺失时显示状态面板，说明影响哪些功能
  * - 蓝牙传输模式下，缺少必需权限时阻止启动并引导用户授权
  * - 首次使用控制端/中继端时提示电池优化豁免
+ *
+ * Main interface: role selection (Controller/Relay/Controlled) and transport method selection.
+ * This is the app's entry screen, providing a user-friendly experience for selecting roles
+ * and transport methods, with integrated permission management and battery optimization guidance.
+ *
+ * Supports three roles:
+ * - Controller: Connects to controlled device, receives screen frames and sends control commands
+ * - Relay: Acts as Bluetooth-USB bridge, forwarding data between controller and controlled
+ * - Controlled: Provides screen frames and receives control commands
+ *
+ * Supports two transport methods:
+ * - USB ADB: Connection via adb forward port forwarding
+ * - Bluetooth RFCOMM: Connection via Bluetooth Classic protocol
+ *
+ * Also provides quick access to standalone features:
+ * - Clipboard Sync: Cross-device clipboard sharing
+ * - File Transfer: Inter-device file exchange
+ * - Folder Sync: Automated bidirectional folder synchronization
+ *
+ * Robustness design:
+ * - Shows status panel when permissions are missing, explaining affected features
+ * - Blocks startup and guides user to authorization when required permissions are missing in Bluetooth mode
+ * - Prompts for battery optimization exemption when using Controller/Relay for the first time
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 class MainActivity : AppCompatActivity() {
     companion object {
-        /** 请求运行时权限的请求码 */
+        /** 请求运行时权限的请求码 | Request code for runtime permissions */
         private const val REQUEST_PERMISSIONS = 100
-        /** 请求启用蓝牙的请求码 */
+        /** 请求启用蓝牙的请求码 | Request code for enabling Bluetooth */
         private const val REQUEST_ENABLE_BT = 101
 
-        /** SharedPreferences 名称 */
+        /** SharedPreferences 名称 | SharedPreferences name */
         private const val PREFS_NAME = "app_settings"
-        /** 是否已提示过电池优化 */
+        /** 是否已提示过电池优化 | Whether battery optimization prompt has been shown */
         private const val PREF_BATTERY_PROMPT_SHOWN = "battery_optimization_prompted"
     }
 
-    /** 角色选择单选按钮组 */
+    /** 角色选择单选按钮组 | Role selection radio group */
     private lateinit var roleGroup: RadioGroup
-    /** 传输方式选择单选按钮组 */
+    /** 传输方式选择单选按钮组 | Transport method selection radio group */
     private lateinit var transportGroup: RadioGroup
 
-    /** 权限状态面板 */
+    /** 权限状态面板 | Permission status panel */
     private lateinit var permissionPanel: LinearLayout
+    /** 权限摘要文本 | Permission summary text */
     private lateinit var tvPermissionSummary: TextView
+    /** 权限详情按钮 | Permission details button */
     private lateinit var btnPermissionDetails: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         transportGroup = findViewById(R.id.transport_group)
         val startButton = findViewById<Button>(R.id.btn_start)
 
-        // Standalone feature buttons
+        // 独立功能按钮 | Standalone feature buttons
         val btnClipboard = findViewById<Button>(R.id.btn_clipboard)
         val btnFileTransfer = findViewById<Button>(R.id.btn_file_transfer)
         val btnFolderSync = findViewById<Button>(R.id.btn_folder_sync)
@@ -118,17 +147,25 @@ class MainActivity : AppCompatActivity() {
         requestRequiredPermissions()
     }
 
+    /**
+     * 活动恢复时的回调，每次界面可见时刷新权限状态面板。
+     *
+     * Callback when activity resumes, refreshes permission status panel whenever UI becomes visible.
+     */
     override fun onResume() {
         super.onResume()
-        // 每次回到前台刷新权限状态（用户可能从设置返回）
+        // 每次回到前台刷新权限状态（用户可能从设置返回）| Refresh permission status every time returning to foreground (user may return from settings)
         updatePermissionStatusPanel()
     }
 
     /**
-     * 处理开始按钮点击事件
-     *
+     * 处理开始按钮点击事件。
      * 根据用户选择的角色和传输方式，启动对应的 Activity。
-     * 蓝牙模式下会先检查权限和蓝牙状态。
+     * 蓝牙模式下会先检查权限和蓝牙状态，确保满足运行条件后再跳转。
+     *
+     * Handles start button click event.
+     * Launches the corresponding Activity based on user-selected role and transport method.
+     * In Bluetooth mode, checks permissions and Bluetooth status first, ensuring prerequisites are met before navigation.
      */
     private fun onStartClicked() {
         val roleId = roleGroup.checkedRadioButtonId
@@ -140,12 +177,12 @@ class MainActivity : AppCompatActivity() {
             TransportType.BLUETOOTH_RFCOMM
         }
 
-        // 蓝牙传输时，检查权限
+        // 蓝牙传输时，检查权限 | When using Bluetooth transport, check permissions
         if (transport == TransportType.BLUETOOTH_RFCOMM) {
             val requiredPermissions = mutableListOf<String>()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 requiredPermissions.add(Manifest.permission.BLUETOOTH_CONNECT)
-                // 中继模式额外需要 ADVERTISE 权限
+                // 中继模式额外需要 ADVERTISE 权限 | Relay mode requires additional ADVERTISE permission
                 if (roleId == R.id.radio_relay) {
                     requiredPermissions.add(Manifest.permission.BLUETOOTH_ADVERTISE)
                 }
@@ -167,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                 if (!canProceed) return
             }
 
-            // 检查蓝牙是否已启用
+            // 检查蓝牙是否已启用 | Check if Bluetooth is enabled
             try {
                 val adapter = BluetoothAdapter.getDefaultAdapter()
                 if (adapter == null || !adapter.isEnabled) {
@@ -182,7 +219,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 对于需要后台保活的角色，检查电池优化
+        // 对于需要后台保活的角色，检查电池优化 | For roles requiring background keep-alive, check battery optimization
         if (roleId == R.id.radio_controller || roleId == R.id.radio_relay) {
             checkAndRequestBatteryOptimization()
         }
@@ -201,10 +238,14 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    // ---- 权限请求 ----
+    // ---- 权限请求 | Permission Requests ----
 
     /**
-     * 请求应用运行所需的全部权限
+     * 请求应用运行所需的全部权限，包括蓝牙、定位、通知、存储等。
+     * 根据 Android 版本动态选择对应的权限常量。
+     *
+     * Requests all permissions required for app operation, including Bluetooth, location, notifications, storage, etc.
+     * Dynamically selects corresponding permission constants based on Android version.
      */
     private fun requestRequiredPermissions() {
         val permissions = mutableListOf<String>()
@@ -236,7 +277,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 文件传输功能需要的存储权限
+        // 文件传输功能需要的存储权限 | Storage permissions required for file transfer features
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
                 != PackageManager.PERMISSION_GRANTED
@@ -264,6 +305,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 权限请求结果回调，处理用户授权选择后的逻辑。
+     *
+     * Permission request result callback, handles logic after user authorization choices.
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -271,20 +317,25 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSIONS) {
-            // 权限结果返回后刷新面板
+            // 权限结果返回后刷新面板 | Refresh panel after permission result returns
             updatePermissionStatusPanel()
         }
     }
 
-    // ---- 权限状态面板 ----
+    // ---- 权限状态面板 | Permission Status Panel ----
 
     /**
-     * 更新权限状态面板的显示
-     *
-     * 根据当前缺失的权限数量和类型：
+     * 更新权限状态面板的显示。
+     * 根据当前缺失的权限数量和类型动态调整面板背景色和文案：
      * - 红色背景：缺少核心权限（BLUETOOTH_CONNECT）
      * - 橙色背景：缺少可选权限
      * - 隐藏：所有权限已授予
+     *
+     * Updates the permission status panel display.
+     * Dynamically adjusts panel background color and text based on missing permissions:
+     * - Red background: Missing critical permissions (BLUETOOTH_CONNECT)
+     * - Orange background: Missing optional permissions
+     * - Hidden: All permissions granted
      */
     private fun updatePermissionStatusPanel() {
         val missingPermissions = PermissionHelper.getMissingPermissionsSummary(this)
@@ -296,7 +347,7 @@ class MainActivity : AppCompatActivity() {
 
         permissionPanel.visibility = View.VISIBLE
 
-        // 判断是否缺少核心权限
+        // 判断是否缺少核心权限 | Check if critical permissions are missing
         val hasCriticalMissing = missingPermissions.any { result ->
             result.affectedFeatures.any {
                 it == "屏幕镜像" || it == "所有蓝牙操作"
@@ -304,13 +355,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (hasCriticalMissing) {
-            permissionPanel.setBackgroundColor(Color.parseColor("#D32F2F")) // 红色
+            permissionPanel.setBackgroundColor(Color.parseColor("#D32F2F")) // 红色 | Red
             tvPermissionSummary.text = getString(
                 R.string.permission_missing_critical,
                 missingPermissions.size
             )
         } else {
-            permissionPanel.setBackgroundColor(Color.parseColor("#F57C00")) // 橙色
+            permissionPanel.setBackgroundColor(Color.parseColor("#F57C00")) // 橙色 | Orange
             tvPermissionSummary.text = getString(
                 R.string.permission_missing_optional,
                 missingPermissions.size
@@ -319,9 +370,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * 显示权限详情对话框
+     * 显示权限详情对话框，详细列出所有缺失权限信息。
+     * 包含受影响功能、缺失原因说明、以及当前状态（可重新请求 / 需前往设置）。
+     * 根据权限状态提供对应的操作按钮。
      *
-     * 列出所有缺失权限、受影响功能、以及状态（可重新请求 / 需前往设置）
+     * Shows permission details dialog with detailed information about all missing permissions.
+     * Includes affected features, explanation for missing permissions, and current status (can re-request / need to go to settings).
+     * Provides corresponding action buttons based on permission status.
      */
     private fun showPermissionDetailsDialog() {
         val missingPermissions = PermissionHelper.getMissingPermissionsSummary(this)
@@ -369,7 +424,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * 打开应用的系统设置页面
+     * 打开应用的系统设置页面，方便用户手动授予永久拒绝的权限。
+     *
+     * Opens the app's system settings page, allowing users to manually grant permanently denied permissions.
      */
     private fun openAppSettings() {
         try {
@@ -382,13 +439,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ---- 电池优化 ----
+    // ---- 电池优化 | Battery Optimization ----
 
     /**
-     * 检查并请求电池优化豁免
+     * 检查并请求电池优化豁免，确保后台服务不被系统杀死。
+     * 仅在首次使用需要后台保活的功能（控制端/中继端）时提示一次。
+     * 不强制要求，用户可选择"暂不设置"，后续可从系统设置手动开启。
      *
-     * 仅在首次使用需要后台保活的功能时提示一次。
-     * 不强制要求，用户可选择"暂不设置"。
+     * Checks and requests battery optimization exemption to ensure background services aren't killed by system.
+     * Only prompts once when using features requiring background keep-alive (Controller/Relay) for the first time.
+     * Not mandatory, users can choose "Skip for now" and manually enable it later from system settings.
      */
     private fun checkAndRequestBatteryOptimization() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
@@ -399,7 +459,7 @@ class MainActivity : AppCompatActivity() {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         if (powerManager.isIgnoringBatteryOptimizations(packageName)) return
 
-        // 标记已提示，避免每次都弹
+        // 标记已提示，避免每次都弹 | Mark as prompted to avoid showing every time
         prefs.edit().putBoolean(PREF_BATTERY_PROMPT_SHOWN, true).apply()
 
         AlertDialog.Builder(this)

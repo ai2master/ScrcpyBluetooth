@@ -9,16 +9,16 @@ import android.content.IntentFilter
 import com.scrcpybt.common.util.Logger
 
 /**
- * 蓝牙设备管理器：处理设备发现和配对
+ * 蓝牙设备管理器：处理设备发现和配对 | Bluetooth device manager: handles device discovery and pairing
  *
- * 主要功能：
- * - 获取已配对设备列表
- * - 扫描发现附近的蓝牙设备
- * - 管理蓝牙适配器状态
+ * 主要功能：| Main features:
+ * - 获取已配对设备列表 | Get list of paired devices
+ * - 扫描发现附近的蓝牙设备 | Scan and discover nearby Bluetooth devices
+ * - 管理蓝牙适配器状态 | Manage Bluetooth adapter state
  *
- * 使用场景：
- * - 控制端选择要连接的被控设备
- * - 中继端发现附近的设备
+ * 使用场景：| Use cases:
+ * - 控制端选择要连接的被控设备 | Controller selects controlled device to connect
+ * - 中继端发现附近的设备 | Relay discovers nearby devices
  */
 class BluetoothManager(private val context: Context) {
     companion object {
@@ -33,14 +33,14 @@ class BluetoothManager(private val context: Context) {
     private val discoveredDevices = mutableListOf<BluetoothDevice>()
 
     /**
-     * 设备发现监听器接口
+     * 设备发现监听器接口 | Device discovery listener interface
      */
     interface DeviceDiscoveryListener {
-        /** 发现新设备 */
+        /** 发现新设备 | Device found */
         fun onDeviceFound(device: BluetoothDevice)
-        /** 开始扫描 */
+        /** 开始扫描 | Discovery started */
         fun onDiscoveryStarted()
-        /** 扫描完成 */
+        /** 扫描完成 | Discovery finished */
         fun onDiscoveryFinished()
     }
 
@@ -65,9 +65,9 @@ class BluetoothManager(private val context: Context) {
     }
 
     /**
-     * 获取已配对的设备列表
+     * 获取已配对的设备列表 | Get list of paired devices
      *
-     * @return 已配对的蓝牙设备列表
+     * @return 已配对的蓝牙设备列表 | List of paired Bluetooth devices
      */
     fun getPairedDevices(): List<BluetoothDevice> {
         val result = mutableListOf<BluetoothDevice>()
@@ -83,9 +83,9 @@ class BluetoothManager(private val context: Context) {
     }
 
     /**
-     * 开始设备发现（扫描附近的蓝牙设备）
+     * 开始设备发现（扫描附近的蓝牙设备） | Start device discovery (scan nearby Bluetooth devices)
      *
-     * @param listener 设备发现监听器
+     * @param listener 设备发现监听器 | Device discovery listener
      */
     fun startDiscovery(listener: DeviceDiscoveryListener) {
         this.listener = listener
@@ -112,7 +112,7 @@ class BluetoothManager(private val context: Context) {
     }
 
     /**
-     * 停止设备发现
+     * 停止设备发现 | Stop device discovery
      */
     fun stopDiscovery() {
         try {
@@ -126,9 +126,9 @@ class BluetoothManager(private val context: Context) {
     }
 
     /**
-     * 检查蓝牙是否可用且已启用
+     * 检查蓝牙是否可用且已启用 | Check if Bluetooth is available and enabled
      *
-     * @return true 如果蓝牙可用且已启用
+     * @return true 如果蓝牙可用且已启用 | true if Bluetooth is available and enabled
      */
     fun isBluetoothAvailable(): Boolean = adapter?.isEnabled == true
 

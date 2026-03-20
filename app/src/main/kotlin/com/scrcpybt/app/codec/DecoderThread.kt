@@ -49,10 +49,21 @@ class DecoderThread : Thread("FrameDecoder") {
         fun onFrameDecoded(bitmap: Bitmap)
     }
 
+    /**
+     * 设置帧尺寸（初始化 Bitmap 缓冲区）| Set frame dimensions (initialize Bitmap buffer)
+     *
+     * @param width 帧宽度 | Frame width
+     * @param height 帧高度 | Frame height
+     */
     fun setDimensions(width: Int, height: Int) {
         decoder.setDimensions(width, height)
     }
 
+    /**
+     * 设置帧解码监听器 | Set frame listener
+     *
+     * @param listener 监听器实例 | Listener instance
+     */
     fun setListener(listener: FrameListener) {
         this.listener = listener
     }
@@ -70,10 +81,19 @@ class DecoderThread : Thread("FrameDecoder") {
         }
     }
 
+    /**
+     * 线程主循环：持续从队列取帧并解码 | Thread main loop: continuously fetch and decode frames from queue
+     *
+     * 循环逻辑 | Loop Logic:
+     * - 每 100ms 轮询一次队列（避免空转）| Poll queue every 100ms (avoid busy wait)
+     * - 解码成功后通过回调传递 Bitmap | Pass Bitmap via callback after successful decoding
+     * - 捕获中断异常并退出线程 | Catch interrupt exception and exit thread
+     */
     override fun run() {
         Logger.i(TAG, "Decoder thread started")
         while (running) {
             try {
+                // 阻塞等待新帧（超时 100ms）| Block wait for new frame (timeout 100ms)
                 val msg = inputQueue.poll(100, TimeUnit.MILLISECONDS)
                 if (msg != null) {
                     val bitmap = decoder.decode(msg)
@@ -89,6 +109,11 @@ class DecoderThread : Thread("FrameDecoder") {
         Logger.i(TAG, "Decoder thread stopped")
     }
 
+    /**
+     * 停止解码线程 | Stop decoding thread
+     *
+     * 设置停止标志并中断线程（触发 InterruptedException）。| Set stop flag and interrupt thread (trigger InterruptedException).
+     */
     fun stopDecoding() {
         running = false
         interrupt()

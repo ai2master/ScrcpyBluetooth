@@ -24,6 +24,11 @@ import com.scrcpybt.common.util.Logger
  * ### 资源清理
  * release() 方法会恢复原始设置，确保不影响用户的设备配置。
  *
+ * Wake lock manager that prevents device from entering deep sleep during remote
+ * sessions using multiple fallback strategies with proper cleanup on release.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see PowerManager
  */
 class WakeLockManager {

@@ -26,6 +26,11 @@ import com.scrcpybt.common.util.Logger
  * - 使用 `am start --display <id>` 指定目标显示器
  * - 解析命令输出以验证启动是否成功
  *
+ * Virtual display launcher that starts activities on virtual displays to prevent
+ * black screen issues by trying multiple launcher strategies with fallback options.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see VirtualDisplayManager
  */
 class VirtualDisplayLauncher {

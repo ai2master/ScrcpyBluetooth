@@ -10,17 +10,18 @@ import androidx.appcompat.widget.SwitchCompat
 import com.scrcpybt.app.R
 
 /**
- * 分享转发配置界面（运行在被控设备上）
+ * 分享转发配置界面（运行在被控设备上） | Share forwarding configuration activity (runs on controlled device)
  *
- * 功能说明：
- * - 配置分享转发的目标应用
+ * 功能说明：| Features:
+ * - 配置分享转发的目标应用 | Configure target app for share forwarding
  * - 当控制端发起分享操作时，自动将内容转发到被控设备的指定应用
- * - 支持选择任何能接收分享的已安装应用
+ *   When controller initiates share, automatically forward content to specified app on controlled device
+ * - 支持选择任何能接收分享的已安装应用 | Supports selecting any installed app that can receive shares
  *
- * 配置项：
- * - 启用/禁用分享转发功能
- * - 目标应用包名
- * - 目标组件名（Activity）
+ * 配置项：| Configuration options:
+ * - 启用/禁用分享转发功能 | Enable/disable share forwarding
+ * - 目标应用包名 | Target app package name
+ * - 目标组件名（Activity） | Target component name (Activity)
  */
 class ShareConfigActivity : AppCompatActivity() {
     companion object {
@@ -82,9 +83,9 @@ class ShareConfigActivity : AppCompatActivity() {
     }
 
     /**
-     * 获取所有能接收分享的应用包名列表
+     * 获取所有能接收分享的应用包名列表 | Get list of all apps capable of receiving shares
      *
-     * @return 应用包名列表
+     * @return 应用包名列表 | List of app package names
      */
     private fun getShareCapableApps(): List<String> {
         val pm = packageManager
@@ -96,7 +97,7 @@ class ShareConfigActivity : AppCompatActivity() {
     }
 
     /**
-     * 从 SharedPreferences 加载已保存的配置
+     * 从 SharedPreferences 加载已保存的配置 | Load saved configuration from SharedPreferences
      */
     private fun loadConfig() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -113,7 +114,7 @@ class ShareConfigActivity : AppCompatActivity() {
     }
 
     /**
-     * 保存配置到 SharedPreferences
+     * 保存配置到 SharedPreferences | Save configuration to SharedPreferences
      */
     private fun saveConfig() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

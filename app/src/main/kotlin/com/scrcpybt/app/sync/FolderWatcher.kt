@@ -8,8 +8,32 @@ import com.scrcpybt.common.sync.IgnorePattern
 import java.io.File
 
 /**
- * Watches folder for changes using Android FileObserver.
- * Accumulates changes and notifies after delay to batch operations.
+ * 文件夹监视器：使用 Android FileObserver 监视文件夹变化 | Folder Watcher: Watches folder for changes using Android FileObserver
+ *
+ * 工作原理 | How it works:
+ * - 使用递归 FileObserver 监控所有子目录 | Uses recursive FileObserver to monitor all subdirectories
+ * - 累积变化并在延迟后批量通知 | Accumulates changes and notifies after delay to batch operations
+ * - 尊重忽略模式（.syncignore）| Respects ignore patterns (.syncignore)
+ * - 自动跳过 .stversions/ 目录 | Automatically skips .stversions/ directory
+ *
+ * 监听事件 | Monitored Events:
+ * - CREATE: 文件/目录创建 | File/directory created
+ * - DELETE: 文件/目录删除 | File/directory deleted
+ * - MODIFY: 文件内容修改 | File content modified
+ * - MOVE: 文件/目录移动 | File/directory moved
+ * - CLOSE_WRITE: 写入完成 | Write completed
+ *
+ * 性能优化 | Performance Optimizations:
+ * - 延迟通知批处理多个变化 | Delay notification batches multiple changes
+ * - 新建目录时自动添加观察器 | Automatically adds observer for new directories
+ * - 过滤忽略的文件减少不必要通知 | Filters ignored files to reduce unnecessary notifications
+ *
+ * @property folderPath 要监视的文件夹路径 | Folder path to watch
+ * @property delaySec 变化累积延迟（秒）| Change accumulation delay in seconds
+ * @property ignorePattern 忽略模式 | Ignore pattern
+ * @property listener 变化检测监听器 | Change detection listener
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 class FolderWatcher(
     private val folderPath: String,
@@ -17,7 +41,14 @@ class FolderWatcher(
     private val ignorePattern: IgnorePattern,
     private val listener: Listener
 ) {
+    /**
+     * 变化检测监听器接口 | Change detection listener interface
+     */
     interface Listener {
+        /**
+         * 检测到变化时触发 | Triggered when changes are detected
+         * @param changedPaths 变化的文件路径集合 | Set of changed file paths
+         */
         fun onChangesDetected(changedPaths: Set<String>)
     }
 

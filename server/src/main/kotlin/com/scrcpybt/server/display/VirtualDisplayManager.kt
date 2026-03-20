@@ -41,6 +41,11 @@ import java.lang.reflect.Method
  * - OWN_FOCUS: 独立焦点管理（Android 14+）
  * - ALWAYS_UNLOCKED: 始终解锁状态（Android 13+）
  *
+ * Virtual display manager that creates and manages virtual displays using Android
+ * hidden APIs for RDP-like remote control with physical screen isolation.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see DisplayManager
  * @see VirtualDisplay
  */

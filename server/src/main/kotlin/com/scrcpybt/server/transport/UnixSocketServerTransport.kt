@@ -33,7 +33,12 @@ import java.io.OutputStream
  * - 结合 ADB USB 连接，提供物理隔离的安全通道
  * - 应用层仍使用 AES-256-GCM 加密
  *
- * @param socketName Abstract socket 名称（默认使用 ProtocolConstants.ADB_SOCKET_NAME）
+ * Unix abstract socket server transport for USB ADB connection mode,
+ * listening on abstract socket with automatic cleanup and local-only access.
+ *
+ * @param socketName Abstract socket 名称 | Abstract socket name (default: ProtocolConstants.ADB_SOCKET_NAME)
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see ServerTransport
  * @see LocalServerSocket
  */

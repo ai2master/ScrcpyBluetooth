@@ -10,15 +10,16 @@ import java.util.UUID
 
 /**
  * 蓝牙 RFCOMM 服务端：用于中继端角色，监听来自控制端的连接
+ * Bluetooth RFCOMM server: used for relay role, listens for connections from controller
  *
- * 工作流程：
- * 1. 使用 BluetoothAdapter 创建 RFCOMM ServerSocket
- * 2. 监听指定 SERVICE_UUID 的连接请求
- * 3. 接受连接并返回封装的 Connection 对象
+ * 工作流程：| Workflow:
+ * 1. 使用 BluetoothAdapter 创建 RFCOMM ServerSocket | Create RFCOMM ServerSocket with BluetoothAdapter
+ * 2. 监听指定 SERVICE_UUID 的连接请求 | Listen for connection requests on specified SERVICE_UUID
+ * 3. 接受连接并返回封装的 Connection 对象 | Accept connection and return wrapped Connection object
  *
- * 典型使用场景：
- * - 中继端设备等待控制端连接
- * - 被控端设备等待控制端或中继端连接
+ * 典型使用场景：| Typical use cases:
+ * - 中继端设备等待控制端连接 | Relay device waits for controller connection
+ * - 被控端设备等待控制端或中继端连接 | Controlled device waits for controller or relay connection
  */
 class BluetoothRfcommServer {
     companion object {
@@ -31,12 +32,13 @@ class BluetoothRfcommServer {
     private var serverSocket: BluetoothServerSocket? = null
 
     /**
-     * 监听并接受一个传入的 RFCOMM 连接
+     * 监听并接受一个传入的 RFCOMM 连接 | Listen and accept an incoming RFCOMM connection
      *
      * 此方法会阻塞，直到有客户端连接或发生错误
+     * This method blocks until a client connects or an error occurs
      *
-     * @return 已接受的连接对象
-     * @throws IOException 蓝牙不可用或连接失败时抛出
+     * @return 已接受的连接对象 | Accepted connection object
+     * @throws IOException 蓝牙不可用或连接失败时抛出 | Thrown when Bluetooth unavailable or connection fails
      */
     fun accept(): Connection {
         val adapter = BluetoothAdapter.getDefaultAdapter()
@@ -76,7 +78,7 @@ class BluetoothRfcommServer {
     }
 
     /**
-     * 关闭服务端 Socket
+     * 关闭服务端 Socket | Close server socket
      */
     fun close() {
         serverSocket?.let {

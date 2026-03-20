@@ -13,26 +13,36 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 /**
- * SQLite database for sync folder configurations and state.
+ * 同步数据库：用于同步文件夹配置和状态的 SQLite 数据库 | Sync Database: SQLite database for sync folder configurations and state
  *
- * Table: sync_folders
- *   id TEXT PRIMARY KEY
- *   config TEXT NOT NULL  -- JSON serialized SyncConfig
- *   local_sequence INTEGER DEFAULT 0
- *   remote_sequence INTEGER DEFAULT 0
- *   last_sync_time INTEGER
- *   status TEXT DEFAULT 'idle'  -- idle, scanning, syncing, error, paused
+ * 数据库表结构 | Database Schema:
  *
- * Table: sync_files
- *   folder_id TEXT NOT NULL
- *   relative_path TEXT NOT NULL
- *   size INTEGER
- *   last_modified INTEGER
- *   is_directory INTEGER
- *   block_hashes TEXT  -- JSON array of BlockInfo
- *   version INTEGER DEFAULT 0
- *   is_deleted INTEGER DEFAULT 0
+ * 表: sync_folders | Table: sync_folders
+ *   id TEXT PRIMARY KEY                        -- 文件夹ID | Folder ID
+ *   config TEXT NOT NULL                       -- JSON序列化的SyncConfig | JSON serialized SyncConfig
+ *   local_sequence INTEGER DEFAULT 0           -- 本地序列号 | Local sequence number
+ *   remote_sequence INTEGER DEFAULT 0          -- 远程序列号 | Remote sequence number
+ *   last_sync_time INTEGER                     -- 最后同步时间 | Last sync timestamp
+ *   status TEXT DEFAULT 'idle'                 -- 状态: idle, scanning, syncing, error, paused
+ *
+ * 表: sync_files | Table: sync_files
+ *   folder_id TEXT NOT NULL                    -- 所属文件夹ID | Folder ID
+ *   relative_path TEXT NOT NULL                -- 相对路径 | Relative path
+ *   size INTEGER                               -- 文件大小 | File size
+ *   last_modified INTEGER                      -- 最后修改时间 | Last modified timestamp
+ *   is_directory INTEGER                       -- 是否为目录 | Is directory flag
+ *   block_hashes TEXT                          -- JSON数组的BlockInfo | JSON array of BlockInfo
+ *   version INTEGER DEFAULT 0                  -- 版本号 | Version number
+ *   is_deleted INTEGER DEFAULT 0               -- 是否已删除 | Is deleted flag
  *   PRIMARY KEY (folder_id, relative_path)
+ *
+ * 功能 | Features:
+ * - 持久化同步配置和状态 | Persist sync configurations and state
+ * - 跟踪文件版本和块哈希 | Track file versions and block hashes
+ * - 支持断点续传 | Support resume after interruption
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 class SyncDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
@@ -100,7 +110,8 @@ class SyncDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, 
     }
 
     /**
-     * Save or update folder configuration.
+     * 保存或更新文件夹配置 | Save or update folder configuration
+     * @param config 同步配置 | Sync configuration
      */
     fun saveFolderConfig(config: SyncConfig) {
         val db = writableDatabase

@@ -18,19 +18,19 @@ import java.util.*
 import kotlin.math.min
 
 /**
- * Core sync engine implementing Syncthing-like synchronization.
+ * 核心同步引擎，实现类 Syncthing 的同步机制 | Core sync engine implementing Syncthing-like synchronization
  *
- * Lifecycle:
- * 1. Load SyncConfig from database
- * 2. Check run conditions (power, time window, battery)
- * 3. Scan local folder → generate FileInfo with block hashes
- * 4. Exchange manifests with remote
- * 5. Calculate diff (which blocks need transfer)
- * 6. Transfer blocks according to pullOrder
- * 7. Apply received blocks to local files
- * 8. Handle conflicts
- * 9. Apply versioning to replaced files
- * 10. Update sync state
+ * 生命周期：| Lifecycle:
+ * 1. 从数据库加载 SyncConfig | Load SyncConfig from database
+ * 2. 检查运行条件（电源、时间窗口、电池） | Check run conditions (power, time window, battery)
+ * 3. 扫描本地文件夹 → 生成带块哈希的 FileInfo | Scan local folder → generate FileInfo with block hashes
+ * 4. 与远端交换清单 | Exchange manifests with remote
+ * 5. 计算差异（需要传输哪些块） | Calculate diff (which blocks need transfer)
+ * 6. 根据 pullOrder 传输块 | Transfer blocks according to pullOrder
+ * 7. 将接收的块应用到本地文件 | Apply received blocks to local files
+ * 8. 处理冲突 | Handle conflicts
+ * 9. 对替换的文件应用版本管理 | Apply versioning to replaced files
+ * 10. 更新同步状态 | Update sync state
  */
 class SyncEngine(
     private val context: Context,
@@ -67,7 +67,9 @@ class SyncEngine(
     }
 
     /**
-     * Perform a complete sync cycle.
+     * 执行完整的同步周期 | Perform a complete sync cycle
+     *
+     * @return 同步结果 | Sync result
      */
     suspend fun sync(): SyncResult {
         try {
@@ -119,7 +121,9 @@ class SyncEngine(
     }
 
     /**
-     * Scan local folder and generate FileInfo with block hashes.
+     * 扫描本地文件夹并生成带块哈希的 FileInfo | Scan local folder and generate FileInfo with block hashes
+     *
+     * @return 文件路径到文件信息的映射 | Map of file paths to file info
      */
     fun scan(): Map<String, FileInfo> {
         val localFolder = File(config.localPath)
@@ -174,7 +178,11 @@ class SyncEngine(
     }
 
     /**
-     * Calculate diff between local and remote file states.
+     * 计算本地和远端文件状态之间的差异 | Calculate diff between local and remote file states
+     *
+     * @param local 本地文件信息映射 | Local file info map
+     * @param remote 远端文件信息映射 | Remote file info map
+     * @return 同步差异对象 | Sync diff object
      */
     fun calculateDiff(local: Map<String, FileInfo>, remote: Map<String, FileInfo>): SyncDiff {
         val toDownload = mutableListOf<FileDownload>()
@@ -293,7 +301,9 @@ class SyncEngine(
     }
 
     /**
-     * Apply the calculated diff.
+     * 应用计算出的差异 | Apply the calculated diff
+     *
+     * @param diff 同步差异对象 | Sync diff object
      */
     fun applyDiff(diff: SyncDiff) {
         // Handle conflicts first
@@ -323,7 +333,10 @@ class SyncEngine(
     }
 
     /**
-     * Handle a conflict between local and remote files.
+     * 处理本地和远端文件之间的冲突 | Handle a conflict between local and remote files
+     *
+     * @param conflict 冲突文件对 | Conflict file pair
+     * @return 冲突解决策略 | Conflict resolution strategy
      */
     fun handleConflict(conflict: ConflictPair): ConflictResolution {
         Log.w(TAG, "Conflict detected: ${conflict.localFile.relativePath}")
@@ -603,7 +616,7 @@ class SyncEngine(
 }
 
 /**
- * Result of a sync operation.
+ * 同步操作的结果 | Result of a sync operation
  */
 sealed class SyncResult {
     data class Success(

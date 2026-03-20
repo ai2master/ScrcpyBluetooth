@@ -7,8 +7,38 @@ import java.io.File
 import java.io.FileOutputStream
 
 /**
- * Handles receiving shared content and launching target app.
- * Pre-configured target is stored as component name (package/activity).
+ * 分享转发处理器
+ *
+ * 处理被控设备上的分享内容接收和应用启动。
+ * 预配置的目标应用以组件名称（包名/Activity）形式存储。
+ *
+ * ### 功能特性
+ * - 接收文本分享并转发到指定应用
+ * - 接收文件分享（分块传输）并转发到指定应用
+ * - 自动创建临时存储目录
+ * - 根据文件扩展名推断 MIME 类型
+ *
+ * ### 分享协议
+ * 1. **SHARE_TEXT**: 文本分享，直接通过 Intent 转发
+ * 2. **SHARE_FILE_BEGIN**: 开始文件接收
+ * 3. **SHARE_FILE_CHUNK**: 文件数据块传输
+ * 4. **SHARE_FILE_END**: 文件接收完成，启动分享 Intent
+ *
+ * ### 安全性
+ * - 使用 ProcessBuilder 安全传递参数，防止 Shell 命令注入
+ * - 临时文件保存在沙箱目录
+ * - 通过 file:// URI 授予读取权限
+ *
+ * ### 存储位置
+ * 临时文件保存到 `/sdcard/ScrcpyBluetooth/share_temp/`
+ *
+ * Share forward handler that receives shared content (text/files) and launches
+ * target app with Android Intent, preventing command injection attacks.
+ *
+ * @param targetComponent 目标应用组件 | Target app component (format: "com.example/.Activity")
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
+ * @see ShareForwardMessage
  */
 class ShareForwardHandler(private var targetComponent: String? = null) {
 

@@ -11,22 +11,22 @@ import java.io.OutputStream
 import java.net.Socket
 
 /**
- * USB ADB 连接实现：支持两种连接模式
+ * USB ADB 连接实现：支持两种连接模式 | USB ADB connection implementation: supports two connection modes
  *
- * 连接模式：
- * 1. 抽象 Unix Socket（同设备场景）：
- *    - 服务端和客户端在同一设备上
- *    - 直接通过抽象 Socket 通信，无需网络
+ * 连接模式：| Connection modes:
+ * 1. 抽象 Unix Socket（同设备场景）：| Abstract Unix Socket (same device scenario):
+ *    - 服务端和客户端在同一设备上 | Server and client on same device
+ *    - 直接通过抽象 Socket 通信，无需网络 | Direct abstract socket communication without network
  *
- * 2. TCP 回环（跨设备场景）：
- *    - 控制端设备通过 ADB forward 设置端口转发
- *    - 控制端连接到 localhost:PORT
- *    - ADB 将数据通过 USB 线缆隧道传输到被控端的抽象 Socket
+ * 2. TCP 回环（跨设备场景）：| TCP loopback (cross-device scenario):
+ *    - 控制端设备通过 ADB forward 设置端口转发 | Controller sets port forwarding via ADB forward
+ *    - 控制端连接到 localhost:PORT | Controller connects to localhost:PORT
+ *    - ADB 将数据通过 USB 线缆隧道传输到被控端的抽象 Socket | ADB tunnels data via USB to controlled device's abstract socket
  *
- * 典型使用场景：
- * - 控制端：使用 TCP 模式连接（通过 ADB forward）
- * - 被控端：使用抽象 Socket 模式监听
- * - 中继端：可能同时使用两种模式
+ * 典型使用场景：| Typical use cases:
+ * - 控制端：使用 TCP 模式连接（通过 ADB forward） | Controller: uses TCP mode (via ADB forward)
+ * - 被控端：使用抽象 Socket 模式监听 | Controlled: uses abstract socket mode to listen
+ * - 中继端：可能同时使用两种模式 | Relay: may use both modes simultaneously
  */
 class AdbConnection : Connection {
     companion object {
@@ -41,14 +41,14 @@ class AdbConnection : Connection {
     private var connected = false
 
     /**
-     * 通过 TCP 连接到 ADB 转发的端口（控制端侧）
+     * 通过 TCP 连接到 ADB 转发的端口（控制端侧） | Connect via TCP to ADB forwarded port (controller side)
      *
-     * 前提条件：
-     * - 控制端已设置 `adb forward tcp:PORT localabstract:scrcpy_bt`
-     * - 然后连接到 localhost:PORT
+     * 前提条件：| Prerequisites:
+     * - 控制端已设置 `adb forward tcp:PORT localabstract:scrcpy_bt` | Controller has set `adb forward tcp:PORT localabstract:scrcpy_bt`
+     * - 然后连接到 localhost:PORT | Then connect to localhost:PORT
      *
-     * @param port ADB 转发的本地端口
-     * @throws IOException 连接失败时抛出
+     * @param port ADB 转发的本地端口 | Local port forwarded by ADB
+     * @throws IOException 连接失败时抛出 | Thrown when connection fails
      */
     fun connectTcp(port: Int) {
         Logger.i(TAG, "Connecting via TCP to localhost:$port")
@@ -58,10 +58,10 @@ class AdbConnection : Connection {
     }
 
     /**
-     * 通过抽象 Unix Socket 连接（同设备或服务端侧）
+     * 通过抽象 Unix Socket 连接（同设备或服务端侧） | Connect via abstract Unix socket (same device or server side)
      *
-     * @param socketName 抽象 Socket 名称（例如 "scrcpy_bt"）
-     * @throws IOException 连接失败时抛出
+     * @param socketName 抽象 Socket 名称（例如 "scrcpy_bt"） | Abstract socket name (e.g. "scrcpy_bt")
+     * @throws IOException 连接失败时抛出 | Thrown when connection fails
      */
     fun connectLocal(socketName: String) {
         Logger.i(TAG, "Connecting via abstract socket: $socketName")

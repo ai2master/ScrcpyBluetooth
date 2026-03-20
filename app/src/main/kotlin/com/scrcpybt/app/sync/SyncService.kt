@@ -23,16 +23,16 @@ import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Foreground service for background folder synchronization.
+ * 后台文件夹同步前台服务 | Foreground service for background folder synchronization
  *
- * Features:
- * - Runs in background with notification
- * - Manages multiple folder sync configs
- * - Starts/stops SyncEngine instances
- * - Respects PowerConditionChecker
- * - Watches folders via FolderWatcher
- * - Uses SyncDatabase for persistence
- * - Provides Intent actions and Binder interface
+ * 功能特性：| Features:
+ * - 在后台运行并显示通知 | Runs in background with notification
+ * - 管理多个文件夹同步配置 | Manages multiple folder sync configs
+ * - 启动/停止 SyncEngine 实例 | Starts/stops SyncEngine instances
+ * - 遵守 PowerConditionChecker 限制 | Respects PowerConditionChecker
+ * - 通过 FolderWatcher 监控文件夹 | Watches folders via FolderWatcher
+ * - 使用 SyncDatabase 持久化 | Uses SyncDatabase for persistence
+ * - 提供 Intent 操作和 Binder 接口 | Provides Intent actions and Binder interface
  */
 class SyncService : Service() {
 
@@ -53,7 +53,9 @@ class SyncService : Service() {
         const val EXTRA_FOLDER_ID = "folder_id"
 
         /**
-         * Start the sync service.
+         * 启动同步服务 | Start the sync service
+         *
+         * @param context 上下文 | Context
          */
         fun start(context: Context) {
             val intent = Intent(context, SyncService::class.java)
@@ -65,7 +67,9 @@ class SyncService : Service() {
         }
 
         /**
-         * Stop the sync service.
+         * 停止同步服务 | Stop the sync service
+         *
+         * @param context 上下文 | Context
          */
         fun stop(context: Context) {
             val intent = Intent(context, SyncService::class.java)
@@ -73,7 +77,10 @@ class SyncService : Service() {
         }
 
         /**
-         * Request manual resync for a folder.
+         * 请求手动重新同步文件夹 | Request manual resync for a folder
+         *
+         * @param context 上下文 | Context
+         * @param folderId 文件夹 ID | Folder ID
          */
         fun resync(context: Context, folderId: String) {
             val intent = Intent(context, SyncService::class.java).apply {
@@ -88,25 +95,30 @@ class SyncService : Service() {
         }
     }
 
-    // Service binder
+    /** 服务 Binder | Service binder */
     private val binder = LocalBinder()
 
+    /**
+     * 本地 Binder 实现 | Local Binder implementation
+     */
     inner class LocalBinder : Binder() {
         fun getService(): SyncService = this@SyncService
     }
 
-    // Core components
+    /** 核心组件 | Core components */
     private lateinit var database: SyncDatabase
     private lateinit var notificationManager: NotificationManager
     private var wakeLock: PowerManager.WakeLock? = null
 
-    // Sync state management
+    /** 同步状态管理 | Sync state management */
     private val activeSyncs = ConcurrentHashMap<String, SyncContext>()
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val watchers = ConcurrentHashMap<String, FolderWatcher>()
     private val powerCheckers = ConcurrentHashMap<String, PowerConditionChecker>()
 
-    // Listener for activity updates
+    /**
+     * 同步状态监听器，用于向 Activity 更新状态 | Listener for activity updates
+     */
     interface SyncStatusListener {
         fun onSyncStarted(folderId: String)
         fun onSyncProgress(folderId: String, current: Int, total: Int, currentFile: String)
@@ -118,7 +130,7 @@ class SyncService : Service() {
     private var statusListener: SyncStatusListener? = null
 
     /**
-     * Context for a single folder sync operation.
+     * 单个文件夹同步操作的上下文 | Context for a single folder sync operation
      */
     private data class SyncContext(
         val config: SyncConfig,
@@ -217,14 +229,18 @@ class SyncService : Service() {
     }
 
     /**
-     * Set listener for sync status updates.
+     * 设置同步状态更新监听器 | Set listener for sync status updates
+     *
+     * @param listener 监听器实例 | Listener instance
      */
     fun setStatusListener(listener: SyncStatusListener?) {
         this.statusListener = listener
     }
 
     /**
-     * Get all active folder sync configs.
+     * 获取所有活跃的文件夹同步配置 | Get all active folder sync configs
+     *
+     * @return 配置和进度的列表 | List of configs and progress
      */
     fun getActiveSyncs(): List<Pair<SyncConfig, SyncProgress>> {
         return activeSyncs.map { (_, context) ->
@@ -233,21 +249,27 @@ class SyncService : Service() {
     }
 
     /**
-     * Get sync status for a specific folder.
+     * 获取特定文件夹的同步状态 | Get sync status for a specific folder
+     *
+     * @param folderId 文件夹 ID | Folder ID
+     * @return 状态字符串 | Status string
      */
     fun getSyncStatus(folderId: String): String? {
         return database.getFolderStatus(folderId)
     }
 
     /**
-     * Check if a folder is currently syncing.
+     * 检查文件夹是否正在同步 | Check if a folder is currently syncing
+     *
+     * @param folderId 文件夹 ID | Folder ID
+     * @return 是否正在同步 | Whether syncing
      */
     fun isSyncing(folderId: String): Boolean {
         return activeSyncs[folderId]?.isRunning == true
     }
 
     /**
-     * Start sync for all configured folders.
+     * 启动所有已配置文件夹的同步 | Start sync for all configured folders
      */
     private fun startAllFolderSyncs() {
         val configs = database.getAllFolderConfigs()
@@ -263,7 +285,9 @@ class SyncService : Service() {
     }
 
     /**
-     * Start sync for a specific folder.
+     * 启动特定文件夹的同步 | Start sync for a specific folder
+     *
+     * @param folderId 文件夹 ID | Folder ID
      */
     private fun startFolderSync(folderId: String) {
         if (activeSyncs.containsKey(folderId)) {
@@ -336,7 +360,9 @@ class SyncService : Service() {
     }
 
     /**
-     * Stop sync for a specific folder.
+     * 停止特定文件夹的同步 | Stop sync for a specific folder
+     *
+     * @param folderId 文件夹 ID | Folder ID
      */
     private fun stopFolderSync(folderId: String) {
         Log.i(TAG, "Stopping sync for folder: $folderId")
@@ -351,7 +377,7 @@ class SyncService : Service() {
     }
 
     /**
-     * Stop all folder syncs.
+     * 停止所有文件夹同步 | Stop all folder syncs
      */
     private fun stopAllFolderSyncs() {
         Log.i(TAG, "Stopping all folder syncs")
@@ -362,7 +388,9 @@ class SyncService : Service() {
     }
 
     /**
-     * Manually trigger resync for a folder.
+     * 手动触发文件夹重新同步 | Manually trigger resync for a folder
+     *
+     * @param folderId 文件夹 ID | Folder ID
      */
     private fun resyncFolder(folderId: String) {
         val context = activeSyncs[folderId]
@@ -429,7 +457,9 @@ class SyncService : Service() {
     }
 
     /**
-     * Schedule periodic sync for a folder.
+     * 为文件夹安排周期性同步 | Schedule periodic sync for a folder
+     *
+     * @param folderId 文件夹 ID | Folder ID
      */
     private fun schedulePeriodicSync(folderId: String) {
         serviceScope.launch {
@@ -449,7 +479,9 @@ class SyncService : Service() {
     }
 
     /**
-     * Pause a folder sync.
+     * 暂停文件夹同步 | Pause a folder sync
+     *
+     * @param folderId 文件夹 ID | Folder ID
      */
     private fun pauseFolder(folderId: String) {
         val config = database.getFolderConfig(folderId) ?: return
@@ -466,7 +498,9 @@ class SyncService : Service() {
     }
 
     /**
-     * Resume a paused folder sync.
+     * 恢复已暂停的文件夹同步 | Resume a paused folder sync
+     *
+     * @param folderId 文件夹 ID | Folder ID
      */
     private fun resumeFolder(folderId: String) {
         val config = database.getFolderConfig(folderId) ?: return
@@ -483,7 +517,7 @@ class SyncService : Service() {
     }
 
     /**
-     * Create notification channel (Android O+).
+     * 创建通知渠道（Android O+） | Create notification channel (Android O+)
      */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -500,7 +534,10 @@ class SyncService : Service() {
     }
 
     /**
-     * Create notification for foreground service.
+     * 创建前台服务通知 | Create notification for foreground service
+     *
+     * @param contentText 通知内容文本 | Notification content text
+     * @return 通知对象 | Notification object
      */
     private fun createNotification(contentText: String): Notification {
         val intent = Intent(this, FolderSyncActivity::class.java)
@@ -533,14 +570,16 @@ class SyncService : Service() {
     }
 
     /**
-     * Update notification content.
+     * 更新通知内容 | Update notification content
+     *
+     * @param contentText 新的内容文本 | New content text
      */
     private fun updateNotification(contentText: String) {
         notificationManager.notify(NOTIFICATION_ID, createNotification(contentText))
     }
 
     /**
-     * Acquire wake lock to keep CPU awake during sync.
+     * 获取 WakeLock 以在同步期间保持 CPU 唤醒 | Acquire wake lock to keep CPU awake during sync
      */
     private fun acquireWakeLock() {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -552,7 +591,7 @@ class SyncService : Service() {
     }
 
     /**
-     * Release wake lock.
+     * 释放 WakeLock | Release wake lock
      */
     private fun releaseWakeLock() {
         wakeLock?.let {

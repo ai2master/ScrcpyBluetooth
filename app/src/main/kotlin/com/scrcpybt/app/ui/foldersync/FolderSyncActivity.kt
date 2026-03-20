@@ -20,85 +20,151 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Comprehensive UI for folder synchronization configuration and monitoring.
+ * 文件夹同步配置和监控界面（完整功能版）
+ * Comprehensive UI for folder synchronization configuration and monitoring
  *
- * Features:
- * - Folder pair configuration (local/remote paths)
- * - Folder type selection (Send Only, Receive Only, Send-Receive)
- * - Versioning configuration
- * - Power condition settings
- * - .syncignore pattern editing
- * - Sync status display
- * - Manual sync trigger
- * - Service binding for live updates
+ * ### 核心功能 | Core Features
+ * - 文件夹对配置（本地/远程路径）| Folder pair configuration (local/remote paths)
+ * - 文件夹类型选择（仅发送、仅接收、双向同步）| Folder type selection (Send Only, Receive Only, Send-Receive)
+ * - 版本控制配置（简单、分阶段、回收站、外部命令）| Versioning configuration (Simple, Staggered, Trashcan, External)
+ * - 电源条件设置（仅充电时同步、最低电量、时间窗口）| Power condition settings (sync while charging, min battery, time window)
+ * - .syncignore 模式编辑（类似 .gitignore）| .syncignore pattern editing (similar to .gitignore)
+ * - 同步状态实时显示 | Real-time sync status display
+ * - 手动触发同步 | Manual sync trigger
+ * - 服务绑定实时更新 | Service binding for live updates
+ *
+ * ### 设计理念 | Design Philosophy
+ * 参考 Syncthing 的文件夹同步模型，提供企业级的同步配置能力：
+ * Inspired by Syncthing's folder sync model, providing enterprise-level sync configuration:
+ * - 精细的冲突解决策略 | Fine-grained conflict resolution strategy
+ * - 灵活的版本控制机制 | Flexible versioning mechanism
+ * - 电源感知的后台同步 | Power-aware background sync
+ * - 忽略模式支持（.syncignore）| Ignore pattern support (.syncignore)
+ *
+ * ### 技术实现 | Technical Implementation
+ * - 通过 SyncService 执行后台同步任务 | Execute background sync tasks via SyncService
+ * - 使用 SyncDatabase 持久化配置和同步状态 | Persist configuration and sync state using SyncDatabase
+ * - 支持文件系统监视器（FileObserver）实时检测变化 | Support filesystem watcher (FileObserver) for real-time change detection
+ * - 分块传输和断点续传（规划中）| Chunked transfer and resume (planned)
+ *
+ * @see SyncService
+ * @see SyncDatabase
+ * @see SyncConfig
  */
 class FolderSyncActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "FolderSyncActivity"
+        /** 本地文件夹选择请求码 | Local folder selection request code */
         private const val REQUEST_LOCAL_FOLDER = 2001
+        /** .syncignore 编辑请求码 | .syncignore edit request code */
         private const val REQUEST_SYNCIGNORE_EDIT = 2002
     }
 
-    // UI Components - Basic Info
+    // === UI 组件 - 基本信息 | UI Components - Basic Info ===
+    /** 本地文件夹路径输入框 | Local folder path input */
     private lateinit var etLocalFolder: EditText
+    /** 远程文件夹路径输入框 | Remote folder path input */
     private lateinit var etRemoteFolder: EditText
+    /** 选择本地文件夹按钮 | Pick local folder button */
     private lateinit var btnPickLocalFolder: ImageButton
 
-    // UI Components - Folder Type
+    // === UI 组件 - 文件夹类型 | UI Components - Folder Type ===
+    /** 文件夹类型下拉框 | Folder type spinner */
     private lateinit var spinnerFolderType: Spinner
+    /** 文件夹类型描述文本 | Folder type description text */
     private lateinit var tvFolderTypeDesc: TextView
 
-    // UI Components - Versioning
+    // === UI 组件 - 版本控制 | UI Components - Versioning ===
+    /** 版本控制类型下拉框 | Versioning type spinner */
     private lateinit var spinnerVersioningType: Spinner
+    /** 版本控制参数面板 | Versioning parameters panel */
     private lateinit var layoutVersioningParams: LinearLayout
+    /** 版本控制参数1输入框 | Versioning parameter 1 input */
     private lateinit var etVersioningParam1: EditText
+    /** 版本控制参数1标签 | Versioning parameter 1 label */
     private lateinit var tvVersioningParam1Label: TextView
 
-    // UI Components - Power Conditions
+    // === UI 组件 - 电源条件 | UI Components - Power Conditions ===
+    /** 仅在充电时同步复选框 | Sync only while charging checkbox */
     private lateinit var cbSyncOnlyWhileCharging: CheckBox
+    /** 最低电量百分比输入框 | Minimum battery percent input */
     private lateinit var etMinBatteryPercent: EditText
+    /** 遵守省电模式复选框 | Respect battery saver checkbox */
     private lateinit var cbRespectBatterySaver: CheckBox
+    /** 时间窗口起始时间输入框（小时）| Time window start input (hour) */
     private lateinit var etTimeWindowStart: EditText
+    /** 时间窗口结束时间输入框（小时）| Time window end input (hour) */
     private lateinit var etTimeWindowEnd: EditText
 
-    // UI Components - Advanced Settings
+    // === UI 组件 - 高级设置 | UI Components - Advanced Settings ===
+    /** 重新扫描间隔输入框（秒）| Rescan interval input (seconds) */
     private lateinit var etRescanInterval: EditText
+    /** 文件系统监视器开关 | Filesystem watcher checkbox */
     private lateinit var cbFsWatcher: CheckBox
+    /** 文件系统监视器延迟输入框（秒）| Filesystem watcher delay input (seconds) */
     private lateinit var etFsWatcherDelay: EditText
+    /** 忽略删除操作复选框 | Ignore delete operations checkbox */
     private lateinit var cbIgnoreDelete: CheckBox
+    /** 拉取顺序下拉框 | Pull order spinner */
     private lateinit var spinnerPullOrder: Spinner
+    /** 块大小输入框（KB）| Block size input (KB) */
     private lateinit var etBlockSize: EditText
+    /** 最大冲突数输入框 | Max conflicts input */
     private lateinit var etMaxConflicts: EditText
+    /** 最小可用磁盘空间输入框（MB）| Minimum disk free input (MB) */
     private lateinit var etMinDiskFree: EditText
 
-    // UI Components - Sync Control
+    // === UI 组件 - 同步控制 | UI Components - Sync Control ===
+    /** 保存配置按钮 | Save configuration button */
     private lateinit var btnSaveConfig: Button
+    /** 启动服务按钮 | Start service button */
     private lateinit var btnStartService: Button
+    /** 停止服务按钮 | Stop service button */
     private lateinit var btnStopService: Button
+    /** 手动同步按钮 | Manual sync button */
     private lateinit var btnManualSync: Button
+    /** 编辑 .syncignore 按钮 | Edit .syncignore button */
     private lateinit var btnEditSyncIgnore: Button
 
-    // UI Components - Status Display
+    // === UI 组件 - 状态显示 | UI Components - Status Display ===
+    /** 同步状态文本 | Sync status text */
     private lateinit var tvSyncStatus: TextView
+    /** 上次同步时间文本 | Last sync time text */
     private lateinit var tvLastSyncTime: TextView
+    /** 文件数量文本 | File count text */
     private lateinit var tvFileCount: TextView
+    /** 电源状态文本 | Power status text */
     private lateinit var tvPowerStatus: TextView
+    /** 同步进度条 | Sync progress bar */
     private lateinit var progressBar: ProgressBar
+    /** 当前文件名文本 | Current file name text */
     private lateinit var tvCurrentFile: TextView
+    /** 同步日志列表 | Sync log list */
     private lateinit var lvSyncLog: ListView
 
-    // State
+    // === 状态变量 | State Variables ===
+    /** 同步数据库 | Sync database */
     private lateinit var database: SyncDatabase
+    /** 当前文件夹ID | Current folder ID */
     private var currentFolderId: String? = null
+    /** 当前配置 | Current configuration */
     private var currentConfig: SyncConfig? = null
+    /** 同步日志列表 | Sync log list */
     private val syncLog = mutableListOf<String>()
+    /** 日志适配器 | Log adapter */
     private lateinit var logAdapter: ArrayAdapter<String>
 
-    // Service binding
+    // === 服务绑定 | Service Binding ===
+    /** 同步服务实例 | Sync service instance */
     private var syncService: SyncService? = null
+    /** 服务是否已绑定 | Service bound flag */
     private var serviceBound = false
 
+    /**
+     * 服务连接回调：绑定到 SyncService 以接收实时状态更新
+     * Service connection callback: bind to SyncService for real-time status updates
+     */
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             val localBinder = binder as? SyncService.LocalBinder
@@ -117,6 +183,10 @@ class FolderSyncActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 同步状态监听器：接收 SyncService 的实时状态更新
+     * Sync status listener: receive real-time status updates from SyncService
+     */
     private val syncStatusListener = object : SyncService.SyncStatusListener {
         override fun onSyncStarted(folderId: String) {
             if (folderId == currentFolderId) {
@@ -327,16 +397,25 @@ class FolderSyncActivity : AppCompatActivity() {
         btnEditSyncIgnore.setOnClickListener { editSyncIgnore() }
     }
 
+    /**
+     * 加载或创建默认配置
+     * Load or create default configuration
+     *
+     * 简化设计：使用单个默认文件夹配置
+     * Simplified design: use a single default folder configuration
+     * 在实际应用中，可以从 Intent 中读取特定的文件夹 ID
+     * In a real app, you might load a specific folder by ID from intent
+     */
     private fun loadOrCreateConfig() {
-        // For simplicity, we use a single default folder config
-        // In a real app, you might load a specific folder by ID from intent
+        // 简化设计：使用单个默认文件夹配置 | For simplicity, we use a single default folder config
+        // 实际应用中可以从 Intent 加载特定文件夹 | In a real app, you might load a specific folder by ID from intent
         currentFolderId = "default_sync_folder"
 
         val config = database.getFolderConfig(currentFolderId!!)
         if (config != null) {
             loadConfig(config)
         } else {
-            // Create default config
+            // 创建默认配置 | Create default config
             val defaultConfig = SyncConfig(
                 id = currentFolderId!!,
                 localPath = "/sdcard/SyncFolder",
@@ -366,6 +445,12 @@ class FolderSyncActivity : AppCompatActivity() {
         addLog("Configuration loaded")
     }
 
+    /**
+     * 加载配置到 UI 控件
+     * Load configuration into UI controls
+     *
+     * @param config 同步配置 | Sync configuration
+     */
     private fun loadConfig(config: SyncConfig) {
         currentConfig = config
 
@@ -410,6 +495,13 @@ class FolderSyncActivity : AppCompatActivity() {
         updateFileCount()
     }
 
+    /**
+     * 保存配置到数据库
+     * Save configuration to database
+     *
+     * 从 UI 控件读取所有配置项，验证后保存到数据库
+     * Read all configuration items from UI controls, validate and save to database
+     */
     private fun saveConfiguration() {
         try {
             val localPath = etLocalFolder.text.toString()

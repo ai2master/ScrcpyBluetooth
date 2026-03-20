@@ -12,17 +12,23 @@ import com.scrcpybt.app.R
 import com.scrcpybt.app.util.ShortcutHelper
 
 /**
- * 快捷方式自定义管理界面
+ * 快捷方式自定义管理界面 | Shortcut configuration management activity
  *
  * 允许用户独立开关每个快捷入口：
+ * Allows users to independently toggle each shortcut entry:
  * - 桌面长按快捷方式（剪贴板传输、文件传输、文件夹同步、分享穿透设置）
+ *   Launcher shortcuts (clipboard, file transfer, folder sync, share forwarding)
  * - 文本选中操作条（"发送到远端剪贴板"）
+ *   Text selection action ("Send to remote clipboard")
  * - 系统分享菜单（"发送到远端设备"）
+ *   System share menu ("Send to remote device")
  *
  * 并提供"全部删除"和"恢复默认"操作。
+ * Provides "Remove all" and "Restore defaults" operations.
  */
 class ShortcutConfigActivity : AppCompatActivity() {
 
+    /** 开关控件映射表，用于刷新状态 | Switch controls map for state refresh */
     private val switchMap = mutableMapOf<String, Switch>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,6 +123,12 @@ class ShortcutConfigActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 添加分类标题 | Add section header
+     *
+     * @param container 容器布局 | Container layout
+     * @param title 标题文本 | Title text
+     */
     private fun addSectionHeader(container: LinearLayout, title: String) {
         val tv = TextView(this).apply {
             text = title
@@ -127,6 +139,16 @@ class ShortcutConfigActivity : AppCompatActivity() {
         container.addView(tv)
     }
 
+    /**
+     * 添加开关控件 | Add switch control
+     *
+     * @param container 容器布局 | Container layout
+     * @param id 开关标识符 | Switch identifier
+     * @param title 标题文本 | Title text
+     * @param description 描述文本 | Description text
+     * @param checked 初始选中状态 | Initial checked state
+     * @param onChange 状态变化回调 | State change callback
+     */
     private fun addSwitch(
         container: LinearLayout,
         id: String,
@@ -172,6 +194,9 @@ class ShortcutConfigActivity : AppCompatActivity() {
         container.addView(layout)
     }
 
+    /**
+     * 刷新所有开关状态 | Refresh all switch states
+     */
     private fun refreshAllSwitches() {
         switchMap[ShortcutHelper.SHORTCUT_CLIPBOARD]?.isChecked =
             ShortcutHelper.isLauncherShortcutEnabled(this, ShortcutHelper.SHORTCUT_CLIPBOARD)
@@ -185,6 +210,9 @@ class ShortcutConfigActivity : AppCompatActivity() {
         switchMap["share_menu"]?.isChecked = ShortcutHelper.isShareMenuEnabled(this)
     }
 
+    /**
+     * 将 dp 转换为像素 | Convert dp to pixels
+     */
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
     override fun onSupportNavigateUp(): Boolean {

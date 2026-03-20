@@ -8,13 +8,28 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
- * Implements file versioning strategies (modeled after Syncthing).
+ * 文件版本管理器：实现文件版本控制策略（仿照 Syncthing）| File Versioner: Implements file versioning strategies (modeled after Syncthing)
  *
- * Supports 4 versioning types:
- * 1. Trashcan: Move old versions to .stversions/, configurable cleanup days
- * 2. Simple: Keep N old versions in .stversions/ with timestamps
- * 3. Staggered: Keep versions at increasing time intervals
- * 4. External: Call user command with file path
+ * 支持 4 种版本控制类型 | Supports 4 versioning types:
+ * 1. Trashcan（回收站）: 移动旧版本到 .stversions/，可配置清理天数 | Move old versions to .stversions/, configurable cleanup days
+ * 2. Simple（简单）: 在 .stversions/ 保留 N 个带时间戳的旧版本 | Keep N old versions in .stversions/ with timestamps
+ * 3. Staggered（阶梯式）: 以递增时间间隔保留版本 | Keep versions at increasing time intervals
+ * 4. External（外部）: 调用用户命令处理文件路径 | Call user command with file path
+ *
+ * 版本文件存储 | Version File Storage:
+ * - 存储在 .stversions/ 目录 | Stored in .stversions/ directory
+ * - 文件名格式：original~timestamp.ext | Filename format: original~timestamp.ext
+ * - 保持相对路径结构 | Maintains relative path structure
+ *
+ * 清理策略 | Cleanup Strategies:
+ * - Trashcan: 根据配置天数删除旧文件 | Delete old files based on configured days
+ * - Simple: 只保留最新的 N 个版本 | Keep only the latest N versions
+ * - Staggered: 根据年龄保留不同间隔的版本 | Keep versions at different intervals based on age
+ *
+ * @property config 同步配置（包含版本控制设置）| Sync config (contains versioning settings)
+ * @property syncRootPath 同步根目录路径 | Sync root directory path
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 class FileVersioner(private val config: SyncConfig, private val syncRootPath: String) {
 

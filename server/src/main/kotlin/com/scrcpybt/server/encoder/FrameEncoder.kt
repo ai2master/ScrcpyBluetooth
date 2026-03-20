@@ -21,8 +21,13 @@ import java.io.IOException
  * - 关键帧包含完整的调色板数据
  * - 普通帧仅包含压缩的像素索引
  *
- * @param width 帧宽度
- * @param height 帧高度
+ * Server-side frame encoder that encapsulates FrameCodec to encode ARGB pixel arrays
+ * into 256-color frame messages with adaptive palette and RLE compression.
+ *
+ * @param width 帧宽度 | Frame width
+ * @param height 帧高度 | Frame height
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see FrameCodec
  */
 class FrameEncoder(private var width: Int, private var height: Int) {

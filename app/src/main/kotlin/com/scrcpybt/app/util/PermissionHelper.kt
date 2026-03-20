@@ -10,7 +10,8 @@ import androidx.core.content.ContextCompat
 import com.scrcpybt.common.util.Logger
 
 /**
- * 权限辅助工具：管理运行时权限请求与优雅降级
+ * 权限辅助工具：管理运行时权限请求与优雅降级。
+ * 提供全面的权限管理功能，包括版本适配、状态检测、用户友好的权限说明，以及操作前的权限守卫。
  *
  * 主要功能：
  * - 检测缺失的蓝牙相关权限
@@ -23,31 +24,54 @@ import com.scrcpybt.common.util.Logger
  * - Android 12+：BLUETOOTH_ADVERTISE（中继端需要）
  * - 所有版本：ACCESS_FINE_LOCATION（蓝牙扫描需要）
  * - Android 13+：POST_NOTIFICATIONS（前台服务通知需要）
+ *
+ * Permission helper utility: manages runtime permission requests and graceful degradation.
+ * Provides comprehensive permission management including version adaptation, status detection,
+ * user-friendly permission explanations, and pre-operation permission guards.
+ *
+ * Main features:
+ * - Detects missing Bluetooth-related permissions
+ * - Dynamically adapts permission requirements based on Android version
+ * - Provides permission-feature mapping to inform users about affected functionality
+ * - Pre-operation permission guards to avoid SecurityException crashes
+ *
+ * Permission notes:
+ * - Android 12+: BLUETOOTH_CONNECT, BLUETOOTH_SCAN (new Bluetooth permissions)
+ * - Android 12+: BLUETOOTH_ADVERTISE (required for relay mode)
+ * - All versions: ACCESS_FINE_LOCATION (required for Bluetooth scanning)
+ * - Android 13+: POST_NOTIFICATIONS (required for foreground service notifications)
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 object PermissionHelper {
     private const val TAG = "PermissionHelper"
 
     /**
-     * 权限授予状态
+     * 权限授予状态枚举。
+     *
+     * Permission grant status enum.
      */
     enum class PermissionStatus {
-        /** 已授予 */
+        /** 已授予 | Granted */
         GRANTED,
-        /** 被拒绝，可继续请求 */
+        /** 被拒绝，可继续请求 | Denied, can continue requesting */
         DENIED,
-        /** 永久拒绝（用户勾选了"不再询问"），需引导至系统设置 */
+        /** 永久拒绝（用户勾选了"不再询问"），需引导至系统设置 | Permanently denied (user checked "Don't ask again"), need to guide to settings */
         PERMANENTLY_DENIED
     }
 
     /**
-     * 权限检查结果，包含受影响功能和用户友好的说明
+     * 权限检查结果，包含受影响功能和用户友好的说明。
+     *
+     * Permission check result with affected features and user-friendly explanation.
      */
     data class PermissionCheckResult(
         val permission: String,
         val status: PermissionStatus,
-        /** 受影响的功能列表 */
+        /** 受影响的功能列表 | List of affected features */
         val affectedFeatures: List<String>,
-        /** 中文说明：为什么需要此权限、缺少会怎样 */
+        /** 中文说明：为什么需要此权限、缺少会怎样 | Chinese explanation: why this permission is needed and what happens without it */
         val explanation: String
     )
 

@@ -8,16 +8,36 @@ import java.io.File
 import java.io.IOException
 
 /**
- * Handles auth requests on the controlled device (server).
+ * 认证处理器
  *
- * Stores trusted devices in /sdcard/ScrcpyBluetooth/.trusteddevices (JSON)
+ * 处理被控设备上的认证请求。
  *
- * When an unknown device requests a feature:
- *   - Logs "Device X requesting feature Y - auto-granting (server mode)"
- *   - Auto-grants because server runs with root and user configured it
+ * ### 信任设备管理
+ * 信任设备存储在 `/sdcard/ScrcpyBluetooth/.trusteddevices` (JSON 格式)
+ * 数据结构：`Map<String, Set<Byte>>` = 设备指纹 -> 授权功能 ID 集合
  *
- * trustedDevices: Map<String, Set<Byte>> = fingerprint -> set of authorized feature IDs
- * Storage: /sdcard/ScrcpyBluetooth/.trusteddevices JSON file
+ * ### 认证策略
+ * 当未知设备请求功能时：
+ * - 记录日志："Device X requesting feature Y - auto-granting (server mode)"
+ * - 自动授予权限（因为服务端以 root 身份运行，且由用户配置）
+ *
+ * ### 功能授权
+ * 支持针对不同功能进行细粒度授权：
+ * - 文件传输
+ * - 文件夹同步
+ * - 剪贴板同步
+ * - 分享转发
+ * - 等等
+ *
+ * ### 存储位置
+ * `/sdcard/ScrcpyBluetooth/.trusteddevices`
+ *
+ * Authentication handler that manages trusted device permissions on controlled device,
+ * auto-granting in server mode with persistent JSON storage.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
+ * @see AuthMessage
  */
 class AuthHandler {
     private val trustedDevicesFile = File("/sdcard/ScrcpyBluetooth/.trusteddevices")

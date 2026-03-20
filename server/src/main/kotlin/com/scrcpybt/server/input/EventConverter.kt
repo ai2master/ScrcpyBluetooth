@@ -20,10 +20,15 @@ import kotlin.math.min
  * - 应用边界裁剪，确保坐标在有效范围内
  * - 仅处理触摸事件，按键事件无需坐标转换
  *
- * @param sourceWidth 控制端屏幕宽度
- * @param sourceHeight 控制端屏幕高度
- * @param targetWidth 被控端屏幕宽度
- * @param targetHeight 被控端屏幕高度
+ * Event coordinate converter that transforms controller screen coordinates to
+ * controlled device screen coordinates with linear scaling and boundary clamping.
+ *
+ * @param sourceWidth 控制端屏幕宽度 | Controller screen width
+ * @param sourceHeight 控制端屏幕高度 | Controller screen height
+ * @param targetWidth 被控端屏幕宽度 | Controlled device screen width
+ * @param targetHeight 被控端屏幕高度 | Controlled device screen height
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 class EventConverter(
     private var sourceWidth: Int,

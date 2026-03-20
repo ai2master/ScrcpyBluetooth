@@ -21,73 +21,151 @@ import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * Manages file transfer from the controller side.
- * Handles sending and receiving files through the encrypted channel.
- * Now supports resume/checkpoint capability.
+ * 文件传输控制器：管理控制端侧的文件传输 | File Transfer Controller: Manages file transfer from the controller side
+ *
+ * 核心功能 | Core Features:
+ * - 发送和接收文件通过加密通道 | Handles sending and receiving files through encrypted channel
+ * - 支持断点续传能力 | Supports resume/checkpoint capability
+ * - 队列管理和进度追踪 | Queue management and progress tracking
+ * - 历史记录集成 | History recording integration
+ * - 传输状态持久化 | Transfer state persistence
+ *
+ * 传输流程 | Transfer Flow:
+ * 1. 发送端：BEGIN -> CHUNK(0..N) -> END | Sender: BEGIN -> CHUNK(0..N) -> END
+ * 2. 接收端：接收 CHUNK 并写入文件 | Receiver: Receive CHUNK and write to file
+ * 3. 中断恢复：RESUME -> 续传未完成的块 | Interruption recovery: RESUME -> Continue incomplete blocks
+ *
+ * 性能优化 | Performance Optimizations:
+ * - 可配置块大小（默认 8KB）| Configurable chunk size (default 8KB)
+ * - 周期性检查点保存 | Periodic checkpoint saving
+ * - 连接丢失自动标记中断 | Auto-mark interrupted on connection loss
+ *
+ * @property context Android 上下文 | Android context
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 class FileTransferController(private val context: Context) {
     companion object {
         private const val TAG = "FileTransferController"
+        /** 接收文件的本地存储目录 | Local storage directory for received files */
         private val RECEIVE_DIR = File("/sdcard/ScrcpyBluetooth/received/")
     }
 
+    /** 待传输文件队列（线程安全）| Transfer queue (thread-safe) */
     private val transferQueue = CopyOnWriteArrayList<TransferItem>()
+    /** 传输事件监听器列表 | Transfer event listeners */
     private val listeners = mutableListOf<TransferListener>()
+    /** 传输状态数据库 | Transfer state database */
     private val transferDatabase = TransferStateDatabase(context)
+    /** 活跃传输状态映射（transferId -> state）| Active transfer states (transferId -> state) */
     private val activeTransfers = mutableMapOf<String, ActiveTransferState>()
+    /** 历史记录数据库 | History database */
     private var historyDb: HistoryDatabase? = null
+    /** 远程设备名称 | Remote device name */
     private var deviceName: String = "Remote"
 
+    /**
+     * 设置历史记录数据库 | Set history database
+     * @param db 历史数据库实例 | History database instance
+     */
     fun setHistoryDatabase(db: HistoryDatabase) {
         historyDb = db
     }
 
+    /**
+     * 设置远程设备名称 | Set remote device name
+     * @param name 设备名称 | Device name
+     */
     fun setDeviceName(name: String) {
         deviceName = name
     }
 
+    /**
+     * 传输事件监听器接口 | Transfer event listener interface
+     */
     interface TransferListener {
+        /** 传输开始 | Transfer started */
         fun onTransferStarted(item: TransferItem)
+        /** 传输进度更新 | Transfer progress updated */
         fun onTransferProgress(item: TransferItem, progress: Int)
+        /** 传输完成 | Transfer completed */
         fun onTransferComplete(item: TransferItem)
+        /** 传输错误 | Transfer error */
         fun onTransferError(item: TransferItem, error: String)
     }
 
+    /**
+     * 传输项数据类：表示一个待传输或正在传输的文件 | Transfer item data class: Represents a file to be transferred
+     */
     data class TransferItem(
+        /** 唯一标识 | Unique identifier */
         val id: Long,
+        /** 文件名 | File name */
         val name: String,
+        /** 文件大小（字节）| File size in bytes */
         val size: Long,
+        /** 文件 URI（发送时使用）| File URI (used when sending) */
         val uri: Uri?,
+        /** 传输状态 | Transfer status */
         var status: Status = Status.PENDING,
+        /** 传输进度（0-100）| Transfer progress (0-100) */
         var progress: Int = 0,
+        /** 错误信息 | Error message */
         var errorMessage: String? = null
     ) {
+        /**
+         * 传输状态枚举 | Transfer status enum
+         */
         enum class Status {
-            PENDING, TRANSFERRING, DONE, ERROR
+            /** 等待中 | Pending */
+            PENDING,
+            /** 传输中 | Transferring */
+            TRANSFERRING,
+            /** 已完成 | Done */
+            DONE,
+            /** 错误 | Error */
+            ERROR
         }
     }
 
+    /**
+     * 活跃传输状态（内部使用）| Active transfer state (internal use)
+     */
     private data class ActiveTransferState(
+        /** 传输 ID | Transfer ID */
         val transferId: String,
+        /** 随机访问文件（发送时使用）| Random access file (used when sending) */
         val file: RandomAccessFile?,
+        /** 输出流（接收时使用）| Output stream (used when receiving) */
         val outputStream: FileOutputStream?,
+        /** 当前块索引 | Current chunk index */
         var chunkIndex: Int,
+        /** 已传输字节数 | Transferred bytes */
         var transferredBytes: Long,
+        /** 文件总大小 | Total file size */
         val totalSize: Long,
+        /** 是否为接收模式 | Is receiving mode */
         val isReceiving: Boolean,
+        /** 文件名 | File name */
         val fileName: String = "",
+        /** 本地路径 | Local path */
         val localPath: String = ""
     )
 
     init {
-        // Ensure receive directory exists
+        // 确保接收目录存在 | Ensure receive directory exists
         if (!RECEIVE_DIR.exists()) {
             RECEIVE_DIR.mkdirs()
         }
     }
 
     /**
-     * Initialize and auto-resume interrupted transfers on reconnect.
+     * 初始化并自动恢复重连后的中断传输 | Initialize and auto-resume interrupted transfers on reconnect
+     *
+     * 连接建立后调用此方法，自动恢复上次中断的传输任务 | Call this method after connection is established to auto-resume interrupted tasks
+     *
+     * @param deviceFingerprint 设备指纹（用于匹配历史传输）| Device fingerprint (for matching historical transfers)
+     * @param encryptedChannel 加密通道（用于发送恢复消息）| Encrypted channel (for sending resume messages)
      */
     fun initializeAutoResume(deviceFingerprint: String, encryptedChannel: EncryptedChannel) {
         if (!TransferSettings.isAutoResumeOnReconnectEnabled(context)) {
@@ -109,7 +187,10 @@ class FileTransferController(private val context: Context) {
     }
 
     /**
-     * Resume an interrupted transfer.
+     * 恢复一个中断的传输 | Resume an interrupted transfer
+     *
+     * @param state 传输状态（包含断点信息）| Transfer state (contains checkpoint information)
+     * @param encryptedChannel 加密通道 | Encrypted channel
      */
     private fun resumeTransfer(state: TransferState, encryptedChannel: EncryptedChannel) {
         Logger.i(TAG, "Resuming transfer: ${state.fileName} from byte ${state.transferredBytes}")
@@ -124,22 +205,35 @@ class FileTransferController(private val context: Context) {
 
         encryptedChannel.send(resumeMsg)
 
-        // Update state to active
+        // 更新状态为活跃 | Update state to active
         state.status = TransferState.STATUS_ACTIVE
         state.updatedAt = System.currentTimeMillis()
         transferDatabase.saveTransferState(state)
     }
 
+    /**
+     * 添加传输事件监听器 | Add transfer event listener
+     * @param listener 监听器实例 | Listener instance
+     */
     fun addListener(listener: TransferListener) {
         listeners.add(listener)
     }
 
+    /**
+     * 移除传输事件监听器 | Remove transfer event listener
+     * @param listener 监听器实例 | Listener instance
+     */
     fun removeListener(listener: TransferListener) {
         listeners.remove(listener)
     }
 
     /**
-     * Queue a file for sending.
+     * 将文件加入发送队列 | Queue a file for sending
+     *
+     * 从 URI 读取文件元数据并创建 TransferItem | Read file metadata from URI and create TransferItem
+     *
+     * @param uri 文件 URI（来自文件选择器或分享）| File URI (from file picker or share)
+     * @return 传输项 | Transfer item
      */
     fun queueFile(uri: Uri): TransferItem {
         val contentResolver = context.contentResolver
@@ -169,7 +263,17 @@ class FileTransferController(private val context: Context) {
     }
 
     /**
-     * Send a file through the writer with checkpoint support.
+     * 通过加密通道发送文件（支持断点）| Send a file through the writer with checkpoint support
+     *
+     * 传输流程 | Transfer flow:
+     * 1. 发送 BEGIN 消息（包含文件名和大小）| Send BEGIN message (with filename and size)
+     * 2. 分块读取并发送 CHUNK 消息 | Read and send CHUNK messages
+     * 3. 周期性保存检查点到数据库 | Periodically save checkpoints to database
+     * 4. 发送 END 消息标记完成 | Send END message to mark completion
+     *
+     * @param item 传输项 | Transfer item
+     * @param writer 消息写入器 | Message writer
+     * @param deviceFingerprint 设备指纹（用于断点恢复匹配）| Device fingerprint (for resume matching)
      */
     fun sendFile(item: TransferItem, writer: MessageWriter, deviceFingerprint: String = "") {
         if (item.uri == null) {
@@ -289,7 +393,17 @@ class FileTransferController(private val context: Context) {
     }
 
     /**
-     * Handle incoming file chunks and reassemble the file with checkpoint support.
+     * 处理接收到的文件消息并重组文件（支持断点）| Handle incoming file chunks and reassemble the file with checkpoint support
+     *
+     * 消息类型处理 | Message type handling:
+     * - SUB_FILE_BEGIN: 创建接收状态，准备写入文件 | Create receive state and prepare file
+     * - SUB_FILE_CHUNK: 写入数据块，更新进度和检查点 | Write data chunk, update progress and checkpoint
+     * - SUB_FILE_END: 关闭文件，标记完成，记录历史 | Close file, mark completed, record history
+     * - SUB_FILE_RESUME_ACK: 处理恢复确认 | Handle resume acknowledgment
+     * - SUB_FILE_ERROR: 清理失败传输 | Clean up failed transfer
+     *
+     * @param msg 文件传输消息 | File transfer message
+     * @param deviceFingerprint 设备指纹 | Device fingerprint
      */
     fun handleIncomingMessage(msg: FileTransferMessage, deviceFingerprint: String = "") {
         val transferId = msg.transferId.toString()
@@ -395,7 +509,9 @@ class FileTransferController(private val context: Context) {
     }
 
     /**
-     * Mark all active transfers as interrupted (on connection loss).
+     * 标记所有活跃传输为中断（连接丢失时调用）| Mark all active transfers as interrupted (on connection loss)
+     *
+     * 关闭所有文件流并更新数据库状态，以便重连后恢复 | Close all file streams and update database state for later resume
      */
     fun markActiveTransfersAsInterrupted() {
         for ((transferId, state) in activeTransfers) {
@@ -407,20 +523,28 @@ class FileTransferController(private val context: Context) {
         Logger.i(TAG, "Marked all active transfers as interrupted")
     }
 
+    /**
+     * 获取传输队列的快照 | Get a snapshot of the transfer queue
+     * @return 传输项列表 | List of transfer items
+     */
     fun getTransferQueue(): List<TransferItem> = transferQueue.toList()
 
+    /** 通知监听器传输开始 | Notify listeners that transfer started */
     private fun notifyStarted(item: TransferItem) {
         listeners.forEach { it.onTransferStarted(item) }
     }
 
+    /** 通知监听器传输进度 | Notify listeners of transfer progress */
     private fun notifyProgress(item: TransferItem, progress: Int) {
         listeners.forEach { it.onTransferProgress(item, progress) }
     }
 
+    /** 通知监听器传输完成 | Notify listeners that transfer completed */
     private fun notifyComplete(item: TransferItem) {
         listeners.forEach { it.onTransferComplete(item) }
     }
 
+    /** 通知监听器传输错误 | Notify listeners of transfer error */
     private fun notifyError(item: TransferItem, error: String) {
         listeners.forEach { it.onTransferError(item, error) }
     }

@@ -28,6 +28,11 @@ import com.scrcpybt.common.util.Logger
  * - 如果已锁定则通过输入注入解锁
  * - 断开连接时自动锁定
  *
+ * Screen unlocker and state manager that implements RDP-like virtual display mode
+ * on Android 10+ and falls back to keep-awake + input injection on older versions.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see VirtualDisplayManager
  * @see PowerControl
  */

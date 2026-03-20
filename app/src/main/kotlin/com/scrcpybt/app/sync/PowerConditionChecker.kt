@@ -11,17 +11,41 @@ import com.scrcpybt.common.sync.SyncConfig
 import java.util.*
 
 /**
- * Checks if power/battery conditions are met for syncing.
- * Registers BroadcastReceivers for:
- *   - ACTION_BATTERY_CHANGED
- *   - ACTION_POWER_CONNECTED/DISCONNECTED
- *   - ACTION_POWER_SAVE_MODE_CHANGED
+ * 电源条件检查器：检查是否满足同步的电源/电池条件 | Power Condition Checker: Checks if power/battery conditions are met for syncing
+ *
+ * 检查条件 | Checked Conditions:
+ * 1. 充电状态：是否需要充电才能同步 | Charging status: Whether charging is required for sync
+ * 2. 电池电量：最低电量百分比要求 | Battery level: Minimum battery percentage requirement
+ * 3. 省电模式：是否尊重省电模式 | Battery saver: Whether to respect battery saver mode
+ * 4. 时间窗口：允许同步的时间范围 | Time window: Time range allowed for syncing
+ *
+ * 监听广播 | Monitored Broadcasts:
+ *   - ACTION_BATTERY_CHANGED: 电池状态变化 | Battery status changed
+ *   - ACTION_POWER_CONNECTED/DISCONNECTED: 电源连接/断开 | Power connected/disconnected
+ *   - ACTION_POWER_SAVE_MODE_CHANGED: 省电模式变化 | Power save mode changed
+ *
+ * 使用场景 | Use Cases:
+ * - SyncService 检查是否可以开始同步 | SyncService checks if sync can start
+ * - 监听电源状态变化自动触发/暂停同步 | Monitor power state changes to auto trigger/pause sync
+ * - 用户配置的省电策略 | User-configured power saving policies
+ *
+ * @property context Android 上下文 | Android context
+ * @property config 同步配置（包含电源条件设置）| Sync config (contains power condition settings)
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  */
 class PowerConditionChecker(
     private val context: Context,
     private val config: SyncConfig
 ) {
+    /**
+     * 条件变化监听器接口 | Condition change listener interface
+     */
     interface Listener {
+        /**
+         * 条件变化时触发 | Triggered when conditions change
+         * @param canSync 是否可以同步 | Whether syncing is allowed
+         */
         fun onConditionsChanged(canSync: Boolean)
     }
 
@@ -49,7 +73,8 @@ class PowerConditionChecker(
     }
 
     /**
-     * Check if all power conditions are met for syncing.
+     * 检查是否满足所有电源条件可以同步 | Check if all power conditions are met for syncing
+     * @return true 如果满足所有条件 | true if all conditions are met
      */
     fun canSync(): Boolean {
         // Check if charging required

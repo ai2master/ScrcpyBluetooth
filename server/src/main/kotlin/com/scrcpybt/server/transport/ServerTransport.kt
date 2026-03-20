@@ -12,6 +12,11 @@ import java.io.IOException
  * - BluetoothServerTransport: 蓝牙 RFCOMM 服务端
  * - UnixSocketServerTransport: Unix socket 服务端（ADB forward）
  *
+ * Server transport interface that defines common behavior for accepting incoming
+ * connections from controller clients via different transport methods.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see BluetoothServerTransport
  * @see UnixSocketServerTransport
  * @see Connection

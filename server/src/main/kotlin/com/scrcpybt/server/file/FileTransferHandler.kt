@@ -18,6 +18,7 @@ import java.io.IOException
  * - 支持断点续传
  * - 多个并发传输（通过 transferId 区分）
  * - 自动创建接收目录
+ * - 路径遍历攻击防护
  *
  * ### 传输协议
  * 1. **FILE_BEGIN**: 开始新的文件传输，创建目标文件
@@ -27,8 +28,18 @@ import java.io.IOException
  * 5. **FILE_ACK**: 确认消息（成功或错误）
  *
  * ### 存储位置
- * 接收的文件默认保存到 `/sdcard/Download/scrcpy_bt/`
+ * 接收的文件默认保存到 `/sdcard/ScrcpyBluetooth/received/`
  *
+ * ### 安全性
+ * - 文件名清理：移除路径分隔符、空字节、路径遍历序列
+ * - 路径解析验证：确保结果仍在接收目录内部
+ * - 防止写入沙箱外的文件
+ *
+ * File transfer handler that manages file reception and transmission with chunked transfer,
+ * resume support, and path traversal protection.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see FileTransferMessage
  */
 class FileTransferHandler {

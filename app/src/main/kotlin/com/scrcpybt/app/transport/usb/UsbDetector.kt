@@ -5,15 +5,15 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 /**
- * USB 连接检测器：检测 ADB 设备连接状态
+ * USB 连接检测器：检测 ADB 设备连接状态 | USB connection detector: detects ADB device connection status
  *
- * 功能：
- * - 检查是否有 ADB 设备连接
- * - 获取连接设备的序列号
+ * 功能：| Features:
+ * - 检查是否有 ADB 设备连接 | Check if ADB device is connected
+ * - 获取连接设备的序列号 | Get serial number of connected device
  *
- * 实现方式：
- * - 通过执行 `adb devices` 命令并解析输出
- * - 适用于控制端或中继端检测被控设备的连接状态
+ * 实现方式：| Implementation:
+ * - 通过执行 `adb devices` 命令并解析输出 | Execute `adb devices` command and parse output
+ * - 适用于控制端或中继端检测被控设备的连接状态 | Suitable for controller or relay to detect controlled device connection
  */
 class UsbDetector {
     companion object {
@@ -21,9 +21,9 @@ class UsbDetector {
     }
 
     /**
-     * 检查是否有 ADB 设备连接
+     * 检查是否有 ADB 设备连接 | Check if ADB device is connected
      *
-     * @return true 如果检测到至少一个设备
+     * @return true 如果检测到至少一个设备 | true if at least one device detected
      */
     fun isDeviceConnected(): Boolean {
         return try {
@@ -47,9 +47,9 @@ class UsbDetector {
     }
 
     /**
-     * 获取第一个连接设备的序列号
+     * 获取第一个连接设备的序列号 | Get serial number of first connected device
      *
-     * @return 设备序列号，如果没有设备则返回 null
+     * @return 设备序列号，如果没有设备则返回 null | Device serial number, or null if no device
      */
     fun getDeviceSerial(): String? {
         return try {

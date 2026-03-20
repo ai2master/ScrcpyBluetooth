@@ -29,6 +29,11 @@ import java.util.UUID
  * - 服务 UUID 在 ProtocolConstants 中定义
  * - 每次只接受一个连接（单会话）
  *
+ * Bluetooth RFCOMM server transport that listens for and accepts incoming
+ * secure RFCOMM connections using Android Bluetooth API.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see ServerTransport
  * @see BluetoothAdapter
  */

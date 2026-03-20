@@ -26,6 +26,11 @@ import com.scrcpybt.common.util.Logger
  * - 本组件**不使用** LSPosed/Xposed 框架钩子
  * - 如需使用 Xposed 方案，用户应安装单独的模块（如 Enable Screenshot）
  *
+ * FLAG_SECURE bypass module that optionally disables secure window flags to capture
+ * protected app content (requires root), with automatic cleanup on disconnect.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see PowerControl
  */
 class SecureFlagBypass {

@@ -8,25 +8,44 @@ import com.scrcpybt.common.util.Logger
 import org.json.JSONObject
 
 /**
- * SQLite-based history recording for all operations.
- * Uses android.database.sqlite.SQLiteOpenHelper.
+ * 历史记录数据库：基于 SQLite 的所有操作历史持久化 | History database for all operations using SQLite
  *
- * Table: transfer_history
- * Columns:
- *   id INTEGER PRIMARY KEY AUTOINCREMENT
- *   type TEXT NOT NULL  -- "clipboard", "file_transfer", "folder_sync", "share_forward", "screen_mirror"
- *   direction TEXT NOT NULL  -- "send" or "receive"
- *   device_name TEXT
- *   device_fingerprint TEXT
- *   timestamp INTEGER NOT NULL  -- epoch millis
- *   details TEXT  -- JSON blob with type-specific details
- *   status TEXT NOT NULL  -- "success", "failed", "interrupted"
- *   bytes_transferred INTEGER DEFAULT 0
- *   file_name TEXT  -- for file transfers
- *   file_path TEXT  -- local path
+ * 核心功能 | Core Functions:
+ * - 统一记录所有功能的操作历史（剪贴板、文件传输、文件夹同步、分享转发、投屏）| Record operation history for all features uniformly
+ * - 支持按类型、时间、设备筛选查询 | Support filtering by type, time, device
+ * - 提供操作审计和统计分析数据源 | Provide data source for operation audit and statistics
+ *
+ * 表结构 | Table Schema:
+ * - 表名: transfer_history | Table name: transfer_history
+ * - 主键: id (自增) | Primary key: id (auto-increment)
+ * - 索引: timestamp (降序), type | Indexes: timestamp (desc), type
+ *
+ * 字段说明 | Column Descriptions:
+ * - id: 自增主键 | Auto-increment primary key
+ * - type: 操作类型（clipboard/file_transfer/folder_sync/share_forward/screen_mirror）| Operation type
+ * - direction: 方向（send/receive/bidirectional）| Direction
+ * - device_name: 设备名称 | Device name
+ * - device_fingerprint: 设备指纹 | Device fingerprint
+ * - timestamp: 时间戳（毫秒）| Timestamp (milliseconds)
+ * - details: JSON 格式详细信息 | JSON formatted details
+ * - status: 状态（success/failed/interrupted）| Status
+ * - bytes_transferred: 传输字节数 | Bytes transferred
+ * - file_name: 文件名（文件传输时使用）| File name (for file transfers)
+ * - file_path: 本地路径（文件传输时使用）| Local path (for file transfers)
+ *
+ * 使用场景 | Use Cases:
+ * - 各功能模块调用对应的 record*() 方法记录历史 | Each feature module calls corresponding record*() method to record history
+ * - 历史记录界面调用 getHistory() 查询展示 | History UI calls getHistory() to query and display
+ * - 设置界面调用 clearHistory() 清空历史 | Settings UI calls clearHistory() to clear history
+ *
+ * @param context Android Context
+ * @see HistoryEntry
  */
 class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
+    /**
+     * 数据库创建回调：创建表和索引 | Database creation callback: create table and indexes
+     */
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("""
             CREATE TABLE $TABLE_HISTORY (
@@ -44,19 +63,29 @@ class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
             )
         """)
 
-        // Create index on timestamp for faster queries
+        // 创建索引加速查询 | Create indexes for faster queries
         db.execSQL("CREATE INDEX idx_timestamp ON $TABLE_HISTORY($COL_TIMESTAMP DESC)")
         db.execSQL("CREATE INDEX idx_type ON $TABLE_HISTORY($COL_TYPE)")
     }
 
+    /**
+     * 数据库升级回调 | Database upgrade callback
+     *
+     * 当前策略：删除旧表并重建（生产环境需考虑数据迁移）| Current strategy: drop and recreate (consider data migration in production)
+     */
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // For now, just drop and recreate
+        // 暂时采用简单策略：删除旧表并重建 | Simple strategy for now: drop and recreate
         db.execSQL("DROP TABLE IF EXISTS $TABLE_HISTORY")
         onCreate(db)
     }
 
     /**
-     * Record a clipboard transfer operation.
+     * 记录剪贴板传输操作 | Record a clipboard transfer operation
+     *
+     * @param direction 方向（send/receive）| Direction (send/receive)
+     * @param deviceName 设备名称 | Device name
+     * @param charCount 字符数（用于统计传输量）| Character count (for statistics)
+     * @param status 状态（success/failed）| Status (success/failed)
      */
     fun recordClipboard(direction: String, deviceName: String, charCount: Int, status: String) {
         val details = JSONObject().apply {
@@ -79,7 +108,14 @@ class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     /**
-     * Record a file transfer operation.
+     * 记录文件传输操作 | Record a file transfer operation
+     *
+     * @param direction 方向（send/receive）| Direction (send/receive)
+     * @param deviceName 设备名称 | Device name
+     * @param fileName 文件名 | File name
+     * @param filePath 本地路径 | Local path
+     * @param size 文件大小（字节）| File size (bytes)
+     * @param status 状态（success/failed/interrupted）| Status (success/failed/interrupted)
      */
     fun recordFileTransfer(
         direction: String,
@@ -113,7 +149,13 @@ class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     /**
-     * Record a folder sync operation.
+     * 记录文件夹同步操作 | Record a folder sync operation
+     *
+     * @param deviceName 设备名称 | Device name
+     * @param localPath 本地路径 | Local path
+     * @param remotePath 远端路径 | Remote path
+     * @param filesCount 同步文件数量 | Synced files count
+     * @param status 状态（success/failed）| Status (success/failed)
      */
     fun recordFolderSync(
         deviceName: String,
@@ -144,7 +186,11 @@ class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     /**
-     * Record a share forward operation.
+     * 记录分享转发操作 | Record a share forward operation
+     *
+     * @param deviceName 设备名称 | Device name
+     * @param contentType 内容类型（text/image/file）| Content type (text/image/file)
+     * @param status 状态（success/failed）| Status (success/failed)
      */
     fun recordShareForward(deviceName: String, contentType: String, status: String) {
         val details = JSONObject().apply {
@@ -167,7 +213,11 @@ class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     /**
-     * Record a screen mirror session.
+     * 记录屏幕投屏会话 | Record a screen mirror session
+     *
+     * @param deviceName 设备名称 | Device name
+     * @param durationMs 会话时长（毫秒）| Session duration (milliseconds)
+     * @param status 状态（success/failed/interrupted）| Status (success/failed/interrupted)
      */
     fun recordScreenMirror(deviceName: String, durationMs: Long, status: String) {
         val details = JSONObject().apply {
@@ -190,7 +240,11 @@ class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     /**
-     * Get history entries with optional filtering.
+     * 获取历史记录列表（支持可选过滤）| Get history entries with optional filtering
+     *
+     * @param type 操作类型（null 表示所有类型）| Operation type (null for all types)
+     * @param limit 最大返回条数（默认 100）| Max return count (default 100)
+     * @return 历史记录列表（按时间降序）| History entries list (ordered by timestamp desc)
      */
     fun getHistory(type: String? = null, limit: Int = 100): List<HistoryEntry> {
         val entries = mutableListOf<HistoryEntry>()
@@ -233,7 +287,9 @@ class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nul
     }
 
     /**
-     * Clear all history entries.
+     * 清空所有历史记录 | Clear all history entries
+     *
+     * 删除表中所有数据，不删除表结构。| Delete all data in table, but keep table structure.
      */
     fun clearHistory() {
         writableDatabase.delete(TABLE_HISTORY, null, null)

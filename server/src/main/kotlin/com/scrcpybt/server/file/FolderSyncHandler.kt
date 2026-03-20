@@ -10,14 +10,44 @@ import java.io.RandomAccessFile
 import java.security.MessageDigest
 
 /**
- * Handles folder synchronization on the controlled device with block-level sync support.
+ * 文件夹同步处理器
  *
- * This is the server-side (controlled device) handler that:
- * - Scans local folders and generates block-level manifests
- * - Responds to block requests from controller
- * - Receives and applies blocks from controller
- * - Handles deletions and conflicts
- * - Applies .syncignore patterns
+ * 处理被控设备上的文件夹同步操作，支持块级别的增量同步。
+ *
+ * ### 核心功能
+ * - 扫描本地文件夹并生成块级别清单（manifest）
+ * - 响应控制端的块请求
+ * - 接收并应用来自控制端的块数据
+ * - 处理文件删除和冲突
+ * - 应用 .syncignore 模式规则
+ *
+ * ### 块级别同步原理
+ * 1. 将文件分割为固定大小的块（默认 128KB）
+ * 2. 对每个块计算 SHA-256 哈希
+ * 3. 通过比较哈希值，仅传输修改的块
+ * 4. 减少网络传输量，特别适合大文件的增量更新
+ *
+ * ### 同步流程
+ * 1. **SYNC_REQUEST**: 扫描文件夹并发送清单
+ * 2. **SYNC_MANIFEST**: 接收对方的清单
+ * 3. **SYNC_BLOCK_REQUEST**: 接收块请求并发送块数据
+ * 4. **SYNC_BLOCK_DATA**: 接收块数据并写入文件
+ * 5. **SYNC_DELETE**: 处理删除请求
+ * 6. **SYNC_COMPLETE**: 同步完成通知
+ *
+ * ### 安全性
+ * - 路径遍历攻击防护：验证所有相对路径
+ * - .syncignore 支持：排除敏感文件
+ * - .stversions 目录自动跳过
+ *
+ * Folder synchronization handler that implements block-level incremental sync
+ * with SHA-256 hashing, .syncignore patterns, and path traversal protection.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
+ * @see FolderSyncMessage
+ * @see BlockInfo
+ * @see IgnorePattern
  */
 class FolderSyncHandler {
 

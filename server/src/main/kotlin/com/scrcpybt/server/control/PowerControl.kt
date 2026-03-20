@@ -19,6 +19,11 @@ import com.scrcpybt.common.util.Logger
  * - 虚拟显示器模式下关闭物理屏幕以节省电量和保护隐私
  * - 远程控制时可以关闭屏幕而不影响捕获
  *
+ * Power control module that uses Android hidden APIs to control display power state,
+ * allowing screen to be turned off while maintaining virtual display capture.
+ *
+ * @author ScrcpyBluetooth
+ * @since 1.0.0
  * @see SurfaceControl
  */
 class PowerControl {

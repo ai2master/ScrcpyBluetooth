@@ -8,14 +8,15 @@ import java.io.IOException
 import java.util.UUID
 
 /**
- * 蓝牙 RFCOMM 客户端：连接到被控设备的服务端
+ * 蓝牙 RFCOMM 客户端：连接到被控设备的服务端 | Bluetooth RFCOMM client: connects to controlled device's server
  *
- * 工作流程：
- * 1. 使用预定义的 SERVICE_UUID 创建 RFCOMM Socket
- * 2. 连接到目标蓝牙设备
- * 3. 返回封装的 Connection 对象供上层使用
+ * 工作流程：| Workflow:
+ * 1. 使用预定义的 SERVICE_UUID 创建 RFCOMM Socket | Create RFCOMM Socket with predefined SERVICE_UUID
+ * 2. 连接到目标蓝牙设备 | Connect to target Bluetooth device
+ * 3. 返回封装的 Connection 对象供上层使用 | Return wrapped Connection object for upper layer
  *
  * RFCOMM 是蓝牙的串口仿真协议，类似于 TCP Socket
+ * RFCOMM is Bluetooth's serial port emulation protocol, similar to TCP Socket
  */
 class BluetoothRfcommClient {
     companion object {
@@ -25,11 +26,11 @@ class BluetoothRfcommClient {
     }
 
     /**
-     * 连接到运行 ScrcpyBT 服务端的蓝牙设备
+     * 连接到运行 ScrcpyBT 服务端的蓝牙设备 | Connect to Bluetooth device running ScrcpyBT server
      *
-     * @param device 目标蓝牙设备
-     * @return 与服务端的连接对象
-     * @throws IOException 连接失败时抛出
+     * @param device 目标蓝牙设备 | Target Bluetooth device
+     * @return 与服务端的连接对象 | Connection object to server
+     * @throws IOException 连接失败时抛出 | Thrown when connection fails
      */
     fun connect(device: BluetoothDevice): Connection {
         val deviceName: String
